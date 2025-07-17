@@ -116,7 +116,7 @@
                     <div class="d-flex align-items-center justify-content-between flex-wrap row-gap-2">
                         <h5>Последние заказы</h5>
                         <div>
-                            <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-primary px-3">Показать все</a>
+                            <a href="{{ route('admin.orders') }}" class="btn btn-sm btn-primary px-3">Показать все</a>
                         </div>
                     </div>
                 </div>
@@ -236,7 +236,7 @@
                     <div class="d-flex align-items-center justify-content-between flex-wrap">
                         <h5 class="mb-0">Последние перемещения</h5>
                         @if ($latestMovements->count())
-                            <a href="{{ route('admin.movements') }}" class="btn btn-sm btn-primary">Показать все</a>
+                            <a href="#" class="btn btn-sm btn-primary">Показать все</a>
                         @endif
                     </div>
                 </div>

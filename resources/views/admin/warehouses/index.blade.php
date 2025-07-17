@@ -113,7 +113,7 @@
                             @foreach ($warehouses as $warehouse)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $warehouse->name ?? 'N/A' }}</td>
+                                    <td>{{ $warehouse->name ? Str::limit($warehouse->name, 40) : 'N/A' }}</td>
                                     <td>{{ $warehouse->stocks->count() }}</td>
                                     <td>{{ $warehouse->stocks->sum('stock') }} единиц</td>
                                     <td>{{ \Carbon\Carbon::parse($warehouse->created_at)->format('d/m/Y') }}</td>
@@ -121,10 +121,11 @@
                                         {{ optional($warehouse->movements()->latest()->first())->created_at?->format('d/m/Y H:i') ?? '---' }}
                                     </td>
                                     <td>
-                                        <a href="#"
-                                           class="btn btn-sm btn-secondary" title="Modifier">
+                                        <a href="javascript:void(0);" class="btn btn-sm btn-warning"
+                                            onclick="openEditModal({{ $warehouse->id }}, '{{ $warehouse->name }}')">
                                             <i class="ti ti-edit"></i>
                                         </a>
+
                                         <a href="javascript:void(0);" class="btn btn-sm btn-danger"
                                            data-bs-toggle="modal" data-bs-target="#delete_modal"
                                            onclick="setDeleteLink({{ $warehouse->id }})">
@@ -171,6 +172,35 @@
 </div>
 
 
+<!-- Модальное окно редактирования склада -->
+<div class="modal fade" id="edit_warehouse" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Редактировать склад</h5>
+                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Закрыть">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+            <form id="editWarehouseForm" method="POST" action="">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="edit_name" class="form-label">Название склада <span class="text-danger">*</span></label>
+                        <input type="text" id="edit_name" name="name" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary mx-1">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 <!-- Модальное окно подтверждения удаления -->
 <div class="modal fade" id="delete_modal">
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -209,5 +239,13 @@
 </script>
 
 
+<script>
+    function openEditModal(id, name) {
+        const form = document.getElementById('editWarehouseForm');
+        form.action = `/admin/warehouses/update/${id}`;
+        document.getElementById('edit_name').value = name;
+        new bootstrap.Modal(document.getElementById('edit_warehouse')).show();
+    }
+</script>
 
 @endsection

@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('warehouse_id');
             $table->unsignedBigInteger('product_id');
-            $table->integer('stock');
+            $table->integer('stock')->default(0);
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
             $table->timestamps();

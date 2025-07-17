@@ -14,7 +14,9 @@ return new class extends Migration {
             $table->string('customer', 255);
             $table->timestamp('completed_at');
             $table->unsignedBigInteger('warehouse_id');
-            $table->string('status', 255)->comment('active. completed, canceled');
+            $table->string('status')
+                ->default('pending')
+                ->comment('Order Status: pending, active, completed, canceled');
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
             $table->timestamps();
         });

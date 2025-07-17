@@ -2,31 +2,120 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Movement;
 use App\Models\Product;
+use App\Models\Stock;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller {
 
-    public function index() {
-        $products = Product::with('stocks')->paginate(10);
-        return view('admin.products.index', compact('products'));
-    }
-
-    public function stocks() {
+       public function index(){
         $products = Product::with(['stocks.warehouse'])->get();
-
-        return $products->map(function ($product) {
-            return [
-                'id' => $product->id,
-                'name' => $product->name,
-                'price' => $product->price,
-                'stocks' => $product->stocks->map(function ($stock) {
-                    return [
-                        'warehouse' => $stock->warehouse->name,
-                        'stock' => $stock->stock,
-                    ];
-                }),
-            ];
-        });
+        $totalWarehouses = Warehouse::count();
+        $totalProductsInStock = Stock::distinct('product_id')->count();
+        $totalStock = Stock::sum('stock');
+        $lastMovementDate = Movement::latest('created_at')->value('created_at');
+        $warehouses = Warehouse::all();
+        return view('admin.products.index', compact(
+                                        'totalWarehouses',
+                                        'totalProductsInStock',
+                                        'totalStock',
+                                        'lastMovementDate',
+                                        'products',
+                                        'warehouses'
+                                    ));
     }
+
+    public function add(Request $request) {
+        // Валидация входных данных с пользовательскими сообщениями об ошибках
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'warehouse_id' => 'required|exists:warehouses,id',
+            'stock' => 'required|numeric|min:0',
+        ], [
+            'name.required' => 'Пожалуйста, введите название продукта.',
+            'name.string' => 'Название должно быть текстом.',
+            'name.max' => 'Название не должно превышать 255 символов.',
+
+            'price.required' => 'Пожалуйста, укажите цену продукта.',
+            'price.numeric' => 'Цена должна быть числом.',
+            'price.min' => 'Цена не может быть меньше 0.',
+
+            'warehouse_id.required' => 'Пожалуйста, выберите склад.',
+            'warehouse_id.exists' => 'Выбранный склад не существует.',
+
+            'stock.required' => 'Пожалуйста, укажите количество на складе.',
+            'stock.numeric' => 'Количество должно быть числом.',
+            'stock.min' => 'Количество не может быть отрицательным.',
+        ]);
+
+        // Создание нового продукта
+        $product = Product::create([
+            'name' => $request->name,
+            'price' => $request->price,
+        ]);
+
+        // Создание записи на складе с нулевым остатком
+        Stock::create([
+            'product_id' => $product->id,
+            'warehouse_id' => $request->warehouse_id,
+            'stock' => $request->stock,
+        ]);
+
+        return back()->with('success', 'Продукт успешно добавлен.');
+    }
+
+    public function update(Request $request, $id) {
+        // Валидация данных с пользовательскими сообщениями
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'warehouse_id' => 'required|exists:warehouses,id',
+            'stock' => 'required|numeric|min:0',
+
+        ], [
+            'name.required' => 'Пожалуйста, введите название продукта.',
+            'name.string' => 'Название должно быть текстом.',
+            'name.max' => 'Название не должно превышать 255 символов.',
+
+            'price.required' => 'Пожалуйста, укажите цену продукта.',
+            'price.numeric' => 'Цена должна быть числом.',
+            'price.min' => 'Цена не может быть меньше 0.',
+
+            'warehouse_id.required' => 'Пожалуйста, выберите склад.',
+            'warehouse_id.exists' => 'Выбранный склад не существует.',
+
+           'stock.required' => 'Пожалуйста, укажите количество на складе.',
+            'stock.numeric' => 'Количество должно быть числом.',
+            'stock.min' => 'Количество не может быть отрицательным.',
+        ]);
+
+        // Поиск продукта
+        $product = Product::findOrFail($id);
+        $product->update([
+            'name' => $request->name,
+            'price' => $request->price,
+        ]);
+
+        // Обновление записи на складе (предполагаем только одну связанную запись)
+        $stock = Stock::where('product_id', $product->id)->first();
+        if ($stock) {
+            $stock->warehouse_id = $request->warehouse_id;
+            $stock->save();
+        }
+        return back()->with('success', 'Продукт успешно обновлён.');
+    }
+
+    public function delete($id) {
+        $product = Product::findOrFail($id);
+        $product->stocks()->delete();
+        $product->delete();
+        return back()->with('success', 'Продукт успешно удалён.');
+    }
+
+
+
+
 }

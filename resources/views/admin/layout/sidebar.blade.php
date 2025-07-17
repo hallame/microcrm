@@ -31,6 +31,35 @@
                                 <li><a href="#" class="{{ request()->routeIs('admin.warehouse.add') ? 'active' : '' }}" data-bs-toggle="modal" data-bs-target="#add_warehouse">Добавить склад</a></li>
                             </ul>
                         </li>
+
+                        <li class="submenu">
+                            <a href="{{ route('admin.products') }}" class="{{ request()->routeIs(['admin.products', 'admin.product.details']) ? 'active subdrop' : '' }}">
+                                <i class="ti ti-users-group"></i><span>Продукты</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li><a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products', 'admin.product.add') ? 'active' : '' }}">Все Продукты</a></li>
+                                <li><a href="#" class="{{ request()->routeIs('admin.product.add') ? 'active' : '' }}" data-bs-toggle="modal" data-bs-target="#add_product">Добавить Продукт</a></li>
+                            </ul>
+                        </li>
+
+                         <li class="submenu">
+                            <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs(['admin.orders', 'admin.order.details']) ? 'active subdrop' : '' }}">
+                                <i class="ti ti-users-group"></i><span>Заказы</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li><a href="{{ route('admin.orders') }}" class="{{ request()->routeIs('admin.orders', 'admin.order.add') ? 'active' : '' }}">Все Заказы</a></li>
+                                <li><a href="#" class="{{ request()->routeIs('admin.order.add') ? 'active' : '' }}" data-bs-toggle="modal" data-bs-target="#add_order">Создать Заказ</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="{{ request()->routeIs('admin.orders') ? 'active' : '' }}">
+                            <a href="{{ route('admin.orders') }}">
+                                <i class="ti ti-smart-home"></i><span> Заказы</span>
+                                <span class="badge badge-success fs-10 fw-medium text-white p-1">New</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

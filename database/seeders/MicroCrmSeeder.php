@@ -41,7 +41,8 @@ class MicroCrmSeeder extends Seeder {
             $order = Order::create([
                 'customer' => 'Клиент ' . Str::random(5),
                 'warehouse_id' => $warehouse->id,
-                'status' => 'active',
+                'status' => collect(['active', 'canceled', 'completed'])->random(),
+
                 'created_at' => now(),
             ]);
 

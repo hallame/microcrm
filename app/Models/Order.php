@@ -26,6 +26,7 @@ class Order extends Model {
         return $this->hasMany(OrderItem::class);
     }
 
+
     /**
      * Заказ связан с конкретным складом.
      */
