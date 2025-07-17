@@ -29,6 +29,11 @@ class Warehouse extends Model {
     public function orders() {
         return $this->hasMany(Order::class);
     }
+
+    public function movements() {
+        return $this->hasMany(Movement::class);
+    }
+
 }
 
 

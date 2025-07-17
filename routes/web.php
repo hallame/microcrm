@@ -13,6 +13,9 @@ Route::get('/admin/clients', [DashboardController::class, 'clients'])->name('adm
 
 // WAREHOUSE CONTROLLER
 Route::get('/admin/warehouses', [WarehouseController::class, 'index'])->name('admin.warehouses');
+Route::post('/admin/warehouse-add', [WarehouseController::class, 'add'])->name('admin.warehouse.add');
+// Route::post('/admin/warehouse/status-update/{id}', [WarehouseController::class, 'updateStatus']);
+Route::delete('/admin/warehouse-delete/{id}', [WarehouseController::class, 'delete'])->name('admin.warehouse.delete');
 
 
 // WAREHOUSE CONTROLLER
