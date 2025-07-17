@@ -21,9 +21,9 @@
 									</a>
 								</li>
 
-                                {{-- <li class="submenu">
+                                <li class="submenu">
 									<a href="{{ route('admin.clients') }}" class="{{ request()->routeIs(['admin.clients', 'admin.client.details']) ? 'active subdrop' : '' }}">
-										<i class="ti ti-users-group"></i><span>Gestion Clients</span>
+										<i class="ti ti-users-group"></i><span>Склады</span>
 										<span class="menu-arrow"></span>
 									</a>
 									<ul>
@@ -31,6 +31,8 @@
                                         <li><a href="#" class="{{ request()->routeIs('admin.client.create') ? 'active' : '' }}" data-bs-toggle="modal" data-bs-target="#add_client">Ajouter un Client</a></li>
 									</ul>
 								</li>
+
+                                {{--
 
                                  <li class="{{ request()->routeIs('admin.categories') ? 'active' : '' }}">
                                     <a href="{{ route('admin.categories') }}">

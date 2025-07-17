@@ -14,6 +14,7 @@ Route::get('/admin/clients', [DashboardController::class, 'clients'])->name('adm
 // WAREHOUSE CONTROLLER
 Route::get('/admin/warehouses', [WarehouseController::class, 'index'])->name('admin.warehouses');
 
+
 // WAREHOUSE CONTROLLER
 Route::get('/admin/movements', [WarehouseController::class, 'movements'])->name('admin.movements');
 
@@ -25,7 +26,6 @@ Route::get('/admin/products', [ProductController::class, 'index'])->name('admin.
 Route::get('/products/stocks', [ProductController::class, 'stocks']);
 
 // ORDERS CONTROLLER
-
 Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders.index');
 Route::get('/admin/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
 Route::put('/admin/orders/{order}', [OrderController::class, 'update']);
