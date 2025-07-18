@@ -29,13 +29,11 @@ Route::put('/admin/products/update/{id}', [ProductController::class, 'update'])-
 
 // ORDERS CONTROLLER
 Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders');
+Route::post('/admin/orders/add', [OrderController::class, 'add'])->name('admin.order.add');
+Route::put('/admin/orders/update/{id}', [OrderController::class, 'update'])->name('admin.order.update');
 
-Route::post('/admin/orders/add', [OrderController::class, 'add'])->name('admin.product.add');
-Route::delete('/admin/orders/delete/{id}', [OrderController::class, 'delete'])->name('admin.product.delete');
-Route::put('/admin/orders/update/{id}', [OrderController::class, 'update'])->name('admin.product.update');
 
-Route::get('/admin/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
-Route::put('/admin/orders/{order}', [OrderController::class, 'update']);
+Route::delete('/admin/orders/delete/{id}', [OrderController::class, 'delete'])->name('admin.order.delete');
 Route::post('/admin/orders/{order}/complete', [OrderController::class, 'complete']);
 Route::post('/admin/orders/{order}/cancel', [OrderController::class, 'cancel']);
 Route::post('/admin/orders/{order}/resume', [OrderController::class, 'resume']);

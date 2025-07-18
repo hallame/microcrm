@@ -156,7 +156,7 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        {{-- <th>#</th> --}}
                                         <th>Клиент</th>
                                         <th>Продукты</th>
                                         <th>Итого</th>
@@ -171,7 +171,7 @@
                                 <tbody>
                                     @foreach($orders as $order)
                                         <tr>
-                                            <td>{{ $order->id }}</td>
+                                            {{-- <td>{{ $loop->iteration }}</td> --}}
                                             <td>{{ $order->customer ?? 'Неизвестный' }}</td>
                                             <td>
                                                 @foreach($order->items as $item)
@@ -232,9 +232,8 @@
                                 </tbody>
                             </table>
                         </div>
-
                         <div class="mt-3">
-                            {{ $orders->links() }}
+                            {{ $orders->withQueryString()->links('pagination::bootstrap-5') }}
                         </div>
                     @endif
                 </div>
@@ -242,48 +241,71 @@
         </div>
     </div>
 
-{{--
-    <!-- Модальное окно: Добавить продукт -->
-    <div class="modal fade" id="add_product" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-md">
+
+    <!-- Модальное окно: Добавить заказ -->
+    <div class="modal fade" id="add_order" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Добавить продукт</h4>
+                    <h4 class="modal-title">Создать заказ</h4>
                     <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Закрыть">
                         <i class="ti ti-x"></i>
                     </button>
                 </div>
-                <form action="{{ route('admin.product.add') }}" method="POST">
+
+                <form action="{{ route('admin.order.add') }}" method="POST">
                     @csrf
                     <div class="modal-body pb-0">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Название продукта <span class="text-danger">*</span></label>
-                            <input type="text" id="name" name="name" class="form-control" required>
+                            <label for="customer" class="form-label">Имя клиента <span class="text-danger">*</span></label>
+                            <input type="text" id="customer" name="customer" class="form-control" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="price" class="form-label">Цена (₽) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" id="price" name="price" class="form-control" required>
-                        </div>
+
                         <div class="mb-3">
                             <label for="warehouse_id" class="form-label">Склад <span class="text-danger">*</span></label>
-                            <select name="warehouse_id" id="warehouse_id" class="form-control" required>
+
+                            <select id="warehouse_id" name="warehouse_id" class="form-control" required onchange="updateProductOptions()">
+                                <option value="">-- Выберите склад --</option>
                                 @foreach($warehouses as $warehouse)
                                     <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="stock" class="form-label">Начальный остаток <span class="text-danger">*</span></label>
-                            <input type="number" id="stock" name="stock" class="form-control" min="0" required>
+
+                        <hr>
+                        <h5>Товары в заказе</h5>
+                        <div id="order-items">
+                            <div class="row g-2 mb-2 order-item">
+                                <div class="col-md-7">
+
+                                    <select name="items[0][product_id]" class="form-control mt-2 product-select" required>
+                                        <option value="">-- Сначала выберите склад --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" name="items[0][count]" class="form-control" min="1" placeholder="Кол-во" required>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <button type="button" class="btn btn-danger" onclick="removeItem(this)">
+                                        <i class="ti ti-x"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="mb-3 text-end">
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="addItem()">+ Добавить товар</button>
+                        </div>
+
                         <div class="text-end me-3 mb-3">
-                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                            <button type="submit" class="btn btn-primary">Сохранить заказ</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
 
 
 
@@ -292,47 +314,53 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Редактировать продукт</h5>
+                    <h5 class="modal-title">Редактировать заказ</h5>
                     <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Закрыть">
                         <i class="ti ti-x"></i>
                     </button>
                 </div>
-                <form id="editProductForm" method="POST" action="">
+                <form action="{{ route('admin.order.update', $order->id) }}" method="POST">
                     @csrf
                     @method('PUT')
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="edit_name" class="form-label">Название продукта</label>
-                            <input type="text" id="edit_name" name="name" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_price" class="form-label">Цена (₽)</label>
-                            <input type="number" id="edit_price" name="price" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_warehouse_id" class="form-label">Склад</label>
-                            <select name="warehouse_id" id="edit_warehouse_id" class="form-control" required>
-                                @foreach($warehouses as $warehouse)
-                                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_stock" class="form-label">Остаток</label>
-                            <input type="number" id="edit_stock" name="stock" class="form-control" required>
-                        </div>
+
+                    <input type="text" name="customer" value="{{ $order->customer }}" required class="form-control">
+
+                    <select name="warehouse_id" required class="form-control">
+                        @foreach($warehouses as $warehouse)
+                            <option value="{{ $warehouse->id }}" {{ $warehouse->id == $order->warehouse_id ? 'selected' : '' }}>
+                                {{ $warehouse->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <h5>Товары:</h5>
+                    <div id="order-items">
+                        @foreach($order->items as $index => $item)
+                            <div class="row mb-2 order-item">
+                                <div class="col-md-7">
+                                    <select name="items[{{ $index }}][product_id]" class="form-control" required>
+                                        @foreach($products as $product)
+                                            <option value="{{ $product->id }}" {{ $product->id == $item->product_id ? 'selected' : '' }}>
+                                                {{ $product->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" name="items[{{ $index }}][count]" value="{{ $item->count }}" class="form-control" required>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-primary mx-1">Сохранить</button>
-                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-2">Сохранить</button>
                 </form>
             </div>
         </div>
     </div>
 
 
-    <!-- Модальное окно: Подтверждение удаления -->
+    {{-- <!-- Модальное окно: Подтверждение удаления -->
     <div class="modal fade" id="delete_modal">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
@@ -356,6 +384,87 @@
     </div> --}}
 
 
+
+    <script>
+        const stockData = @json($stocksGroupedByWarehouse);
+
+        function updateAllProductSelects() {
+            const warehouseId = document.getElementById('warehouse_id').value;
+
+            // Sélectionne tous les select produits
+            document.querySelectorAll('.product-select').forEach((productSelect, index) => {
+                productSelect.innerHTML = ''; // reset
+
+                if (!warehouseId || !stockData[warehouseId]) {
+                    const opt = document.createElement('option');
+                    opt.value = '';
+                    opt.textContent = 'Сначала выберите склад';
+                    productSelect.appendChild(opt);
+                    return;
+                }
+
+                const availableProducts = stockData[warehouseId];
+
+                if (availableProducts.length === 0) {
+                    const opt = document.createElement('option');
+                    opt.value = '';
+                    opt.textContent = 'Нет продуктов в наличии';
+                    productSelect.appendChild(opt);
+                    return;
+                }
+
+                availableProducts.forEach(product => {
+                    if (product.stock > 0) {
+                        const option = document.createElement('option');
+                        option.value = product.product_id;
+                        option.textContent = `${product.product_name} (${product.stock} ед.)`;
+                        productSelect.appendChild(option);
+                    }
+                });
+            });
+        }
+
+        document.getElementById('warehouse_id').addEventListener('change', updateAllProductSelects);
+
+        // Appel initial si besoin
+        document.addEventListener('DOMContentLoaded', updateAllProductSelects);
+    </script>
+    <script>
+        let itemIndex = 1;
+
+        function addItem() {
+            const container = document.getElementById('order-items');
+            const div = document.createElement('div');
+            div.classList.add('row', 'g-2', 'mb-2', 'order-item');
+            div.innerHTML = `
+                <div class="col-md-7">
+                    <select name="items[${itemIndex}][product_id]" class="form-control mt-2 product-select" required>
+                        <option value="">-- Сначала выберите склад --</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" name="items[${itemIndex}][count]" class="form-control" min="1" placeholder="Кол-во" required>
+                </div>
+                <div class="col-md-2 text-end">
+                    <button type="button" class="btn btn-danger" onclick="removeItem(this)">
+                        <i class="ti ti-x"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(div);
+            itemIndex++;
+
+            // Обновляет продукты, доступные в этом новом select
+            updateAllProductSelects();
+        }
+
+        function removeItem(button) {
+            const row = button.closest('.order-item');
+            row.remove();
+        }
+    </script>
+
+
     <script>
         function setDeleteLink(id) {
             const form = document.getElementById('deleteForm');
@@ -364,17 +473,16 @@
         }
 
         function openEditProductModal(el) {
-        const form = document.getElementById('editProductForm');
+            const form = document.getElementById('editProductForm');
 
-        form.action = `/admin/products/update/${el.dataset.id}`;
-        document.getElementById('edit_name').value = el.dataset.name;
-        document.getElementById('edit_price').value = el.dataset.price;
-        document.getElementById('edit_warehouse_id').value = el.dataset.warehouse;
-        document.getElementById('edit_stock').value = el.dataset.stock;
+            form.action = `/admin/products/update/${el.dataset.id}`;
+            document.getElementById('edit_name').value = el.dataset.name;
+            document.getElementById('edit_price').value = el.dataset.price;
+            document.getElementById('edit_warehouse_id').value = el.dataset.warehouse;
+            document.getElementById('edit_stock').value = el.dataset.stock;
 
-        new bootstrap.Modal(document.getElementById('edit_product')).show();
-    }
-
-
+            new bootstrap.Modal(document.getElementById('edit_product')).show();
+        }
     </script>
+
 @endsection

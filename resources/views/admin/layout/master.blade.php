@@ -4,7 +4,7 @@
 	<!-- Meta Tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') | Zaly Merveille</title>
+    <title>@yield('title') | Micro CRM</title>
     <meta name="description" content="Découvrez Zaly Merveille, la plateforme dédiée à la valorisation du patrimoine culturel et naturel de la Guinée Forestière. Explorez des sites uniques, réservez vos visites et plongez dans l'histoire et les traditions locales.">
 	<meta name="robots" content="noindex, nofollow">
 
@@ -95,6 +95,7 @@
             @include('admin.layout.footer')
         </div>
         <!-- /Page Wrapper -->
+        @include('admin.layout.modals')
     </div>
 	<!-- /Main Wrapper -->
     @include('admin.layout.scripts')

@@ -35,14 +35,13 @@ class MicroCrmSeeder extends Seeder {
         }
 
         // 4. Создаем несколько заказов
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 65; $i++) {
             $warehouse = $warehouses->random();
 
             $order = Order::create([
                 'customer' => 'Клиент ' . Str::random(5),
                 'warehouse_id' => $warehouse->id,
                 'status' => collect(['active', 'canceled', 'completed'])->random(),
-
                 'created_at' => now(),
             ]);
 

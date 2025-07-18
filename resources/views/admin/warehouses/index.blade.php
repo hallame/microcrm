@@ -145,33 +145,6 @@
 
 
 
-<!-- Modal : Добавить склад -->
-<div class="modal fade" id="add_warehouse" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Добавить склад</h4>
-                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Закрыть">
-                    <i class="ti ti-x"></i>
-                </button>
-            </div>
-            <form action="{{ route('admin.warehouse.add') }}" method="POST">
-                @csrf
-                <div class="modal-body pb-0">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Название склада <span class="text-danger">*</span></label>
-                        <input type="text" id="name" name="name" class="form-control" placeholder="Например: Центральный склад" required>
-                    </div>
-                    <div class="text-end mt-3">
-                        <button type="submit" class="btn btn-primary">Сохранить</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
 <!-- Модальное окно редактирования склада -->
 <div class="modal fade" id="edit_warehouse" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">

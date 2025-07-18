@@ -89,7 +89,7 @@
         </div>
     </div>
 
-  
+
 
 
 
@@ -282,15 +282,15 @@
         }
 
         function openEditProductModal(el) {
-        const form = document.getElementById('editProductForm');
+            const form = document.getElementById('editProductForm');
 
-        form.action = `/admin/products/update/${el.dataset.id}`;
-        document.getElementById('edit_name').value = el.dataset.name;
-        document.getElementById('edit_price').value = el.dataset.price;
-        document.getElementById('edit_warehouse_id').value = el.dataset.warehouse;
-        document.getElementById('edit_stock').value = el.dataset.stock;
+            form.action = `/admin/products/update/${el.dataset.id}`;
+            document.getElementById('edit_name').value = el.dataset.name;
+            document.getElementById('edit_price').value = el.dataset.price;
+            document.getElementById('edit_warehouse_id').value = el.dataset.warehouse;
+            document.getElementById('edit_stock').value = el.dataset.stock;
 
-        new bootstrap.Modal(document.getElementById('edit_product')).show();
-    }
+            new bootstrap.Modal(document.getElementById('edit_product')).show();
+        }
     </script>
 @endsection
