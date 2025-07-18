@@ -207,16 +207,9 @@
 
                                             <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
                                              <td>
-                                                <a href="javascript:void(0);" class="btn btn-sm btn-info"
-                                                        data-id="{{ $order->id }}"
-                                                        data-name="{{ $order->name }}"
-                                                        data-price="{{ $order->price }}"
-                                                        data-warehouse="{{ $order->stock->warehouse_id ?? '' }}"
-                                                        data-stock="{{ $order->stock->stock ?? 0 }}"
-                                                        onclick="openEditProductModal(this)">
-                                                        <i class="ti ti-edit"></i>
-                                                    </a>
-
+                                                <a href="{{ route('admin.order.edit', $order->id) }}" class="btn btn-sm btn-info">
+                                                    <i class="ti ti-edit"></i>
+                                                </a>
 
 
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger"
@@ -226,7 +219,6 @@
                                                     </a>
                                             </td>
                                             <td>{{ $order->warehouse->name }}</td>
-
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -309,55 +301,55 @@
 
 
 
-    <!-- Модальное окно: Редактировать продукт -->
-    <div class="modal fade" id="edit_product" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Редактировать заказ</h5>
-                    <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Закрыть">
-                        <i class="ti ti-x"></i>
-                    </button>
-                </div>
-                <form action="{{ route('admin.order.update', $order->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
+    <!-- Модальное окно: Редактировать заказ -->
+{{-- <div class="modal fade" id="edit_order_modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Редактировать заказ</h4>
+                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Закрыть">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
 
-                    <input type="text" name="customer" value="{{ $order->customer }}" required class="form-control">
+            <form action="{{ route('admin.order.update') }}" method="POST">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="order_id" id="edit_order_id">
 
-                    <select name="warehouse_id" required class="form-control">
-                        @foreach($warehouses as $warehouse)
-                            <option value="{{ $warehouse->id }}" {{ $warehouse->id == $order->warehouse_id ? 'selected' : '' }}>
-                                {{ $warehouse->name }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    <h5>Товары:</h5>
-                    <div id="order-items">
-                        @foreach($order->items as $index => $item)
-                            <div class="row mb-2 order-item">
-                                <div class="col-md-7">
-                                    <select name="items[{{ $index }}][product_id]" class="form-control" required>
-                                        @foreach($products as $product)
-                                            <option value="{{ $product->id }}" {{ $product->id == $item->product_id ? 'selected' : '' }}>
-                                                {{ $product->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="number" name="items[{{ $index }}][count]" value="{{ $item->count }}" class="form-control" required>
-                                </div>
-                            </div>
-                        @endforeach
+                <div class="modal-body pb-0">
+                    <div class="mb-3">
+                        <label for="edit_customer" class="form-label">Имя клиента <span class="text-danger">*</span></label>
+                        <input type="text" id="edit_customer" name="customer" class="form-control" required>
                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-2">Сохранить</button>
-                </form>
-            </div>
+                    <div class="mb-3">
+                        <label for="edit_warehouse_id" class="form-label">Склад <span class="text-danger">*</span></label>
+                        <select id="edit_warehouse_id" name="warehouse_id" class="form-control" required onchange="updateAllProductSelects()">
+                            <option value="">-- Выберите склад --</option>
+                            @foreach($warehouses as $warehouse)
+                                <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <hr>
+                    <h5>Товары в заказе</h5>
+                    <div id="edit_order_items"></div>
+
+                    <div class="mb-3 text-end">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="addEditItem()">+ Добавить товар</button>
+                    </div>
+
+                    <div class="text-end me-3 mb-3">
+                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+</div> --}}
+
 
 
     {{-- <!-- Модальное окно: Подтверждение удаления -->
@@ -382,7 +374,6 @@
             </div>
         </div>
     </div> --}}
-
 
 
     <script>
@@ -464,25 +455,5 @@
         }
     </script>
 
-
-    <script>
-        function setDeleteLink(id) {
-            const form = document.getElementById('deleteForm');
-            const action = form.getAttribute('action').replace(':id', id);
-            form.setAttribute('action', action);
-        }
-
-        function openEditProductModal(el) {
-            const form = document.getElementById('editProductForm');
-
-            form.action = `/admin/products/update/${el.dataset.id}`;
-            document.getElementById('edit_name').value = el.dataset.name;
-            document.getElementById('edit_price').value = el.dataset.price;
-            document.getElementById('edit_warehouse_id').value = el.dataset.warehouse;
-            document.getElementById('edit_stock').value = el.dataset.stock;
-
-            new bootstrap.Modal(document.getElementById('edit_product')).show();
-        }
-    </script>
 
 @endsection

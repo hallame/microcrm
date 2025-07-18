@@ -77,15 +77,6 @@ class OrderController extends Controller {
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.count' => 'required|integer|min:1',
         ], [
-            // --- Общие сообщения ---
-            'required' => 'Поле ":attribute" обязательно для заполнения.',
-            'exists' => 'Выбранное значение для ":attribute" недопустимо.',
-            'min' => 'Минимальное значение для ":attribute": :min.',
-            'integer' => 'Поле ":attribute" должно быть целым числом.',
-            'string' => 'Поле ":attribute" должно быть строкой.',
-            'array' => 'Поле ":attribute" должно быть массивом.',
-
-            // --- Конкретные поля ---
             'customer.required' => 'Пожалуйста, укажите имя клиента.',
             'customer.string' => 'Имя клиента должно быть строкой.',
             'customer.max' => 'Имя клиента не должно превышать 255 символов.',
@@ -150,6 +141,107 @@ class OrderController extends Controller {
             return redirect()->back()->with('error', 'Ошибка: ' . $e->getMessage());
         }
     }
+
+    public function edit($id) {
+        $order = Order::with(['items.product', 'warehouse'])->findOrFail($id);
+        $warehouses = Warehouse::all();
+        $products = Product::all();
+         if ($order->status === 'completed') {
+            return back()->with('error', 'Нельзя изменить завершённый заказ.');
+        }
+
+        $stocksGroupedByWarehouse = Stock::with('product')
+            ->get()
+            ->groupBy('warehouse_id')
+            ->map(fn($group) => $group->map(fn($s) => [
+                'product_id' => $s->product_id,
+                'product_name' => $s->product->name,
+                'stock' => $s->stock,
+            ]));
+
+        return view('admin.orders.edit', compact('order', 'warehouses', 'products', 'stocksGroupedByWarehouse'));
+    }
+
+
+    public function update(Request $request, $id) {
+        $order = Order::findOrFail($id);
+        // Не разрешать обновление, если команда завершена
+        if ($order->status === 'completed') {
+            return back()->with('error', 'Нельзя изменить завершённый заказ.');
+        }
+
+        $request->validate([
+            'customer' => 'required|string|max:255',
+            'warehouse_id' => 'required|exists:warehouses,id',
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.count' => 'required|integer|min:1',
+        ], [
+           'customer.required' => 'Пожалуйста, укажите имя клиента.',
+            'customer.string' => 'Имя клиента должно быть строкой.',
+            'customer.max' => 'Имя клиента не должно превышать 255 символов.',
+
+            'warehouse_id.required' => 'Пожалуйста, выберите склад.',
+            'warehouse_id.exists' => 'Выбранный склад не существует.',
+
+            'items.required' => 'Необходимо добавить хотя бы одну позицию в заказ.',
+            'items.array' => 'Позиции заказа должны быть массивом.',
+            'items.min' => 'Добавьте хотя бы один товар.',
+
+            'items.*.product_id.required' => 'Выберите продукт для каждой позиции.',
+            'items.*.product_id.exists' => 'Выбранный продукт не найден.',
+
+            'items.*.count.required' => 'Укажите количество для каждой позиции.',
+            'items.*.count.integer' => 'Количество должно быть целым числом.',
+            'items.*.count.min' => 'Минимальное количество — 1.',
+        ]);
+
+       $warehouseId = $request->warehouse_id;
+
+        // Проверка доступных остатков с учётом уже зарезервированных в заказе
+        foreach ($request->items as $index => $item) {
+            $productId = $item['product_id'];
+            $requestedCount = $item['count'];
+
+            $stock = Stock::where('product_id', $productId)
+                        ->where('warehouse_id', $warehouseId)
+                        ->first();
+
+            // Количество, уже заказанное ранее (до удаления)
+            $previousCount = $order->items()
+                ->where('product_id', $productId)
+                ->first()?->count ?? 0;
+
+            $availableStock = ($stock?->stock ?? 0) + $previousCount;
+
+            if ($requestedCount > $availableStock) {
+                return back()->withErrors([
+                    "items.$index.product_id" => "Недостаточно запаса для товара «" . Product::find($productId)?->name . "».",
+                ])->withInput();
+            }
+        }
+
+        // Обновление клиента и склада (статус не изменяется)
+        $order->update([
+            'customer' => $request->customer,
+            'warehouse_id' => $warehouseId,
+        ]);
+
+        // Удаление старых позиций
+        $order->items()->delete();
+
+        // Добавление новых позиций
+        foreach ($request->items as $item) {
+            $order->items()->create([
+                'product_id' => $item['product_id'],
+                'count' => $item['count'],
+            ]);
+        }
+
+        return back()->with('success', 'Заказ успешно обновлён.');
+
+    }
+
 
 
 

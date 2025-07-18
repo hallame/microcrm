@@ -44,7 +44,7 @@
                         </li>
 
                          <li class="submenu">
-                            <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs(['admin.orders', 'admin.order.details']) ? 'active subdrop' : '' }}">
+                            <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs(['admin.orders', 'admin.order.edit']) ? 'active subdrop' : '' }}">
                                 <i class="ti ti-users-group"></i><span>Заказы</span>
                                 <span class="menu-arrow"></span>
                             </a>

@@ -30,7 +30,8 @@ Route::put('/admin/products/update/{id}', [ProductController::class, 'update'])-
 // ORDERS CONTROLLER
 Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders');
 Route::post('/admin/orders/add', [OrderController::class, 'add'])->name('admin.order.add');
-Route::put('/admin/orders/update/{id}', [OrderController::class, 'update'])->name('admin.order.update');
+Route::get('/admin/orders/{id}/edit', [OrderController::class, 'edit'])->name('admin.order.edit');
+Route::put('/admin/orders/{id}', [OrderController::class, 'update'])->name('admin.order.update');
 
 
 Route::delete('/admin/orders/delete/{id}', [OrderController::class, 'delete'])->name('admin.order.delete');
