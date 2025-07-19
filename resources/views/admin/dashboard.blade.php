@@ -153,7 +153,7 @@
                                             </td>
                                             <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d.m.Y') }}</td>
                                             <td>
-                                                <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-info">Детали</a>
+                                                <a href="{{ route('admin.orders.index', $order->id) }}" class="btn btn-sm btn-info">Детали</a>
                                             </td>
                                         </tr>
                                     @endforeach
