@@ -29,6 +29,7 @@ Route::put('/admin/products/update/{id}', [ProductController::class, 'update'])-
 
 // ORDERS CONTROLLER
 Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders');
+Route::get('/admin/orders/add/form', [OrderController::class, 'addForm'])->name('admin.order.add.form');
 Route::post('/admin/orders/add', [OrderController::class, 'add'])->name('admin.order.add');
 Route::get('/admin/orders/{id}/edit', [OrderController::class, 'edit'])->name('admin.order.edit');
 Route::put('/admin/orders/{id}', [OrderController::class, 'update'])->name('admin.order.update');

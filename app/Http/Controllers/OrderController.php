@@ -68,6 +68,25 @@ class OrderController extends Controller {
             'products'
         ))->with('filters', $request->all());
     }
+    public function addForm(){
+
+        // PRODUCTS
+        $products = Product::all();
+
+        // WAREHOUSES
+        $warehouses = Warehouse::with(['stocks.product'])->get();
+        foreach ($warehouses as $warehouse) {
+            $stocksGroupedByWarehouse[$warehouse->id] = $warehouse->stocks
+                ->filter(fn($s) => $s->stock > 0)
+                ->map(fn($s) => [
+                    'product_id' => $s->product->id,
+                    'product_name' => $s->product->name,
+                    'stock' => $s->stock,
+                ])->values();
+        }
+
+        return view('admin.orders.add', compact('products', 'warehouses', 'stocksGroupedByWarehouse'));
+    }
 
     public function add(Request $request) {
         $request->validate([

@@ -44,13 +44,13 @@
                         </li>
 
                          <li class="submenu">
-                            <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs(['admin.orders', 'admin.order.edit']) ? 'active subdrop' : '' }}">
+                            <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs(['admin.orders', 'admin.order.edit', 'admin.order.add.form']) ? 'active subdrop' : '' }}">
                                 <i class="ti ti-users-group"></i><span>Заказы</span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <ul>
                                 <li><a href="{{ route('admin.orders') }}" class="{{ request()->routeIs('admin.orders', 'admin.order.add') ? 'active' : '' }}">Все Заказы</a></li>
-                                <li><a href="#" class="{{ request()->routeIs('admin.order.add') ? 'active' : '' }}" data-bs-toggle="modal" data-bs-target="#add_order">Создать Заказ</a></li>
+                                <li><a href="{{ route('admin.order.add.form') }}" class="{{ request()->routeIs('admin.order.add', 'admin.order.add.form') ? 'active' : '' }}">Создать Заказ</a></li>
                             </ul>
                         </li>
 

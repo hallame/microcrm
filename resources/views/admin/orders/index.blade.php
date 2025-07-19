@@ -298,60 +298,6 @@
         </div>
     </div>
 
-
-
-
-    <!-- Модальное окно: Редактировать заказ -->
-{{-- <div class="modal fade" id="edit_order_modal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Редактировать заказ</h4>
-                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Закрыть">
-                    <i class="ti ti-x"></i>
-                </button>
-            </div>
-
-            <form action="{{ route('admin.order.update') }}" method="POST">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="order_id" id="edit_order_id">
-
-                <div class="modal-body pb-0">
-                    <div class="mb-3">
-                        <label for="edit_customer" class="form-label">Имя клиента <span class="text-danger">*</span></label>
-                        <input type="text" id="edit_customer" name="customer" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="edit_warehouse_id" class="form-label">Склад <span class="text-danger">*</span></label>
-                        <select id="edit_warehouse_id" name="warehouse_id" class="form-control" required onchange="updateAllProductSelects()">
-                            <option value="">-- Выберите склад --</option>
-                            @foreach($warehouses as $warehouse)
-                                <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <hr>
-                    <h5>Товары в заказе</h5>
-                    <div id="edit_order_items"></div>
-
-                    <div class="mb-3 text-end">
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="addEditItem()">+ Добавить товар</button>
-                    </div>
-
-                    <div class="text-end me-3 mb-3">
-                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div> --}}
-
-
-
     {{-- <!-- Модальное окно: Подтверждение удаления -->
     <div class="modal fade" id="delete_modal">
         <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -378,11 +324,9 @@
 
     <script>
         const stockData = @json($stocksGroupedByWarehouse);
-
         function updateAllProductSelects() {
             const warehouseId = document.getElementById('warehouse_id').value;
-
-            // Sélectionne tous les select produits
+            // Выбирает все выбранные продукты
             document.querySelectorAll('.product-select').forEach((productSelect, index) => {
                 productSelect.innerHTML = ''; // reset
 
@@ -417,12 +361,11 @@
 
         document.getElementById('warehouse_id').addEventListener('change', updateAllProductSelects);
 
-        // Appel initial si besoin
+        // Первоначальный вызов при необходимости
         document.addEventListener('DOMContentLoaded', updateAllProductSelects);
     </script>
     <script>
         let itemIndex = 1;
-
         function addItem() {
             const container = document.getElementById('order-items');
             const div = document.createElement('div');
