@@ -51,11 +51,11 @@ class DashboardController extends Controller {
             ->get();
 
             // Получаем последние 5 уникальных клиентов по заказам
-        $clients = Order::select('customer', 'created_at')
-            ->orderByDesc('created_at')
-            ->distinct('customer')
-            ->take(5)
-            ->get();
+        // $clients = Order::select('customer', 'created_at')
+        //     ->orderByDesc('created_at')
+        //     ->distinct('customer')
+        //     ->take(5)
+        //     ->get();
 
 
         // Возвращаем представление с данными
@@ -66,7 +66,7 @@ class DashboardController extends Controller {
             'totalWarehouses',
             'latestOrders',
             'latestMovements',
-            'clients',
+            // 'clients',
             'products',
             'warehouses'
         ));

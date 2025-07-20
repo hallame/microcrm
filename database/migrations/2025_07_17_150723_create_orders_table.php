@@ -18,6 +18,7 @@ return new class extends Migration {
                 ->default('pending')
                 ->comment('Order Status: pending, active, completed, canceled');
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
+            $table->timestamp('completed_at')->nullable();
             $table->timestamps();
         });
     }

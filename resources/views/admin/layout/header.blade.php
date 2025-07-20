@@ -2,7 +2,7 @@
 <div class="header">
     <div class="main-header">
         <div class="header-left">
-            <a href="{{ route('admin.dashboard') }}" class="logo-text logo logo-normal">CRM ENTRETIEN</a>
+            <a href="{{ route('admin.dashboard') }}" class="logo-text logo logo-normal">МИКРО ЦРМ</a>
         </div>
         <a id="mobile_btn" class="mobile_btn" href="#sidebar">
             <span class="bar-icon">
@@ -20,7 +20,7 @@
                         <span class="input-icon-addon">
                             <i class="ti ti-search"></i>
                         </span>
-                        <input type="text" class="form-control" placeholder="Rechercher ....">
+                        <input type="text" class="form-control" placeholder="Искать ....">
                         <span class="input-group-text">
                             <kbd>CTRL + / </kbd>
                         </span>
@@ -49,22 +49,10 @@
                                         <span class="avatar avatar-lg me-2 avatar-rounded">
                                             <img src="{{ asset('/assets/images/admin.png') }}" alt="img">
                                         </span>
-                                        {{-- <div>
-                                            <h5 class="mb-0">{{ session('admin.firstname') }} {{ session('admin.lastname') }}</h5>
-                                            <p class="fs-10 fw-medium mb-0">{{ session('admin.email') }}</p>
-                                        </div> --}}
+                                       
                                     </div>
                                 </div>
-                                {{-- <div class="card-body">
-                                    <a class="dropdown-item d-inline-flex align-items-center p-0 " href="{{ route('admin.myprofile') }}">
-                                        <i class="ti ti-circle-arrow-up me-1"></i>Mon Compte
-                                    </a>
-                                </div> --}}
-                                {{-- <div class="card-footer">
-                                    <a class="dropdown-item d-inline-flex align-items-center p-0" href="{{ route('admin.logout') }}">
-                                        <i class="ti ti-login me-2"></i>Se déconnecter
-                                    </a>
-                                </div> --}}
+
                             </div>
                         </div>
                     </div>
@@ -75,8 +63,7 @@
         <div class="dropdown mobile-user-menu">
             <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
             <div class="dropdown-menu dropdown-menu-end">
-                {{-- <a class="dropdown-item" href="{{ route('admin.myprofile') }}">Mon Profil</a>
-                <a class="dropdown-item" href="{{ route('admin.logout') }}">Se déconnecter</a> --}}
+
             </div>
         </div>
         <!-- /Mobile Menu -->

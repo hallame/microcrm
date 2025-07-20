@@ -215,51 +215,123 @@ class OrderController extends Controller {
             'items.*.count.min' => 'Минимальное количество — 1.',
         ]);
 
-       $warehouseId = $request->warehouse_id;
 
-        // Проверка доступных остатков с учётом уже зарезервированных в заказе
+        $warehouseId = $request->warehouse_id;
+
+        // 1. Восстановить старые запасы
+        foreach ($order->items as $oldItem) {
+            $stock = Stock::where('product_id', $oldItem->product_id)
+                ->where('warehouse_id', $order->warehouse_id)
+                ->first();
+
+            if ($stock) {
+                $stock->stock += $oldItem->count;
+                $stock->save();
+            }
+        }
+
+        // 2. Проверка новых остатков с учетом восстановления
         foreach ($request->items as $index => $item) {
             $productId = $item['product_id'];
             $requestedCount = $item['count'];
 
             $stock = Stock::where('product_id', $productId)
-                        ->where('warehouse_id', $warehouseId)
-                        ->first();
+                ->where('warehouse_id', $warehouseId)
+                ->first();
 
-            // Количество, уже заказанное ранее (до удаления)
-            $previousCount = $order->items()
-                ->where('product_id', $productId)
-                ->first()?->count ?? 0;
-
-            $availableStock = ($stock?->stock ?? 0) + $previousCount;
-
-            if ($requestedCount > $availableStock) {
+            if (!$stock || $stock->stock < $requestedCount) {
                 return back()->withErrors([
                     "items.$index.product_id" => "Недостаточно запаса для товара «" . Product::find($productId)?->name . "».",
                 ])->withInput();
             }
         }
 
-        // Обновление клиента и склада (статус не изменяется)
+        // 3. Обновить заказ
         $order->update([
             'customer' => $request->customer,
             'warehouse_id' => $warehouseId,
         ]);
 
-        // Удаление старых позиций
         $order->items()->delete();
 
-        // Добавление новых позиций
+        // 4. Добавить новые позиции и уменьшить запасы
         foreach ($request->items as $item) {
             $order->items()->create([
                 'product_id' => $item['product_id'],
                 'count' => $item['count'],
             ]);
+
+            $stock = Stock::where('product_id', $item['product_id'])
+                ->where('warehouse_id', $warehouseId)
+                ->first();
+
+            if ($stock) {
+                // $stock->stock -= $item['count'];
+                // $stock->save();
+                $stock->decrement('stock', $item['count']);
+
+            }
         }
 
         return back()->with('success', 'Заказ успешно обновлён.');
 
     }
+
+
+
+    public function complete($id) {
+        $order = Order::with('items')->findOrFail($id);
+        if ($order->status !== 'active') {
+            return back()->with('error', 'Только активные заказы могут быть завершены.');
+        }
+        $order->update([
+            'status' => 'completed',
+            'completed_at' => now()
+        ]);
+
+        return back()->with('success', 'Заказ успешно завершён.');
+    }
+
+    public function cancel($id) {
+        $order = Order::with('items')->findOrFail($id);
+        if ($order->status !== 'active') {
+            return back()->with('error', 'Только активные заказы можно отменить.');
+        }
+
+        // Восстановить старые запасы
+        foreach ($order->items as $item) {
+            $stock = Stock::where('product_id', $item->product_id)->where('warehouse_id', $order->warehouse->id)->first();
+            if ($stock) {
+                $stock->stock += $item->count;
+                $stock->save();
+            }
+        }
+        $order->update([ 'status' => 'canceled']);
+        return back()->with('success', 'Заказ успешно отменён.');
+    }
+
+    public function reactivate($id) {
+        $order = Order::with('items')->findOrFail($id);
+        if ($order->status !== 'canceled') {
+            return back()->with('error', 'Только отменённые заказы могут быть возобновлены.');
+        }
+       foreach ($order->items as $item) {
+            $stock = Stock::where('product_id', $item->product_id)
+                ->where('warehouse_id', $order->warehouse_id)->first();
+
+            if (!$stock || $stock->stock < $item->count) {
+                return back()->with('error', "Недостаточно запаса для товара «{$item->product->name}», чтобы возобновить заказ.");
+            }
+            // Немедленное уменьшение
+            $stock->decrement('stock', $item->count);
+        }
+        // Обновление статуса
+        $order->update(['status' => 'active']);
+        return back()->with('success', 'Заказ успешно возобновлён.');
+    }
+
+
+
 
 
 

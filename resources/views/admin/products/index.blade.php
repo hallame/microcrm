@@ -134,7 +134,7 @@
                                             {{ optional($product->movements()->latest()->first())->created_at?->format('d/m/Y H:i') ?? '---' }}
                                         </td>
                                         <td>
-                                           <a href="javascript:void(0);" class="btn btn-sm btn-warning"
+                                           <a href="javascript:void(0);" class="btn btn-sm btn-info"
                                                 data-id="{{ $product->id }}"
                                                 data-name="{{ $product->name }}"
                                                 data-price="{{ $product->price }}"

@@ -160,11 +160,10 @@
                                         <th>Клиент</th>
                                         <th>Продукты</th>
                                         <th>Итого</th>
-                                        <th>Статус</th>
-
                                         <th>Дата</th>
                                         <th>Действия</th>
                                         <th>Склад</th>
+                                       <th>Статус</th>
 
                                     </tr>
                                 </thead>
@@ -181,7 +180,47 @@
                                             <td>
                                                 {{ number_format($order->items->sum(fn($pos) => $pos->product->price * $pos->count), 2, ',', ' ') }} ₽
                                             </td>
+
+
+                                            <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
                                             <td>
+                                                @if ($order->status === 'completed')
+                                                    <span class="">
+                                                        <i class="ti ti-lock"></i> Завершен
+                                                    </span>
+                                                @elseif ($order->status === 'canceled')
+                                                    <form action="{{ route('admin.order.reactivate', $order->id) }}" method="POST" style="display:inline-block;">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-secondary btn-sm"
+                                                            onclick="return confirm('Вы уверены, что хотите возобновить заказ?')">
+                                                            <i class="ti ti-refresh"></i> Возобновить
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <a href="{{ route('admin.order.edit', $order->id) }}" class="btn btn-sm btn-info">
+                                                        <i class="ti ti-edit"></i>
+                                                    </a>
+
+                                                    <form action="{{ route('admin.order.complete', $order->id) }}" method="POST" style="display:inline-block;">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success btn-sm"
+                                                            onclick="return confirm('Вы уверены, что хотите завершить заказ?')">
+                                                            <i class="ti ti-check"></i>
+                                                        </button>
+                                                    </form>
+
+                                                    <form action="{{ route('admin.order.cancel', $order->id) }}" method="POST" style="display:inline-block;">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                            onclick="return confirm('Вы уверены, что хотите отменить заказ?')">
+                                                            <i class="ti ti-x"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </td>
+
+                                            <td>{{ $order->warehouse->name }}</td>
+                                             <td>
                                                 @php
                                                     $status = $order->status;
 
@@ -204,21 +243,6 @@
 
                                                 <span class="badge {{ $badgeClass }}">{{ $translatedStatus }}</span>
                                             </td>
-
-                                            <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
-                                             <td>
-                                                <a href="{{ route('admin.order.edit', $order->id) }}" class="btn btn-sm btn-info">
-                                                    <i class="ti ti-edit"></i>
-                                                </a>
-
-
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger"
-                                                    data-bs-toggle="modal" data-bs-target="#delete_modal"
-                                                    onclick="setDeleteLink({{ $order->id }})">
-                                                        <i class="ti ti-trash"></i>
-                                                    </a>
-                                            </td>
-                                            <td>{{ $order->warehouse->name }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -298,8 +322,8 @@
         </div>
     </div>
 
-    {{-- <!-- Модальное окно: Подтверждение удаления -->
-    <div class="modal fade" id="delete_modal">
+    <!-- Модальное окно: Подтверждение удаления -->
+    {{-- <div class="modal fade" id="delete_modal">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
                 <div class="modal-body text-center">
@@ -307,10 +331,10 @@
                         <i class="ti ti-trash-x fs-36"></i>
                     </span>
                     <h4 class="mb-1">Подтвердите удаление</h4>
-                    <p class="mb-3 text-danger">Удаление продукта необратимо.</p>
+                    <p class="mb-3 text-danger">Удаление Заказа необратимо.</p>
                     <div class="d-flex justify-content-center">
                         <a href="javascript:void(0);" class="btn btn-light me-3" data-bs-dismiss="modal">Отмена</a>
-                        <form id="deleteForm" action="{{ route('admin.product.delete', ':id') }}" method="POST">
+                        <form id="deleteForm" action="{{ route('admin.order.delete', ':id') }}" method="POST">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Да, удалить</button>
