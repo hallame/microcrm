@@ -27,6 +27,11 @@ class ProductController extends Controller {
                                     ));
     }
 
+    public function addForm(){
+        $warehouses = Warehouse::with(['stocks.product'])->get();
+        return view('admin.products.add', compact('warehouses'));
+    }
+
 
     public function add(Request $request){
         $request->validate([
@@ -42,26 +47,27 @@ class ProductController extends Controller {
             'price' => $request->price,
         ]);
 
-        foreach ($request->stocks as $entry) {
-            $stock = Stock::create([
-                'product_id' => $product->id,
-                'warehouse_id' => $entry['warehouse_id'],
-                'stock' => $entry['stock'],
-            ]);
+        foreach ($request->stocks as $stockData) {
+            if (!empty($stockData['warehouse_id']) && $stockData['stock'] > 0) {
+                Stock::create([
+                    'product_id' => $product->id,
+                    'warehouse_id' => $stockData['warehouse_id'],
+                    'stock' => $stockData['stock'],
+                ]);
 
-            if ($entry['stock'] > 0) {
+                // Добавление записи движения
                 Movement::create([
                     'product_id' => $product->id,
-                    'warehouse_id' => $entry['warehouse_id'],
-                    'quantity' => $entry['stock'],
+                    'warehouse_id' => $stockData['warehouse_id'],
+                    'quantity' => $stockData['stock'],
                     'type' => 'create',
-                    'reason' => 'Начальный запас при создании продукта',
+                    'reason' => "Создание товара «{$product->name}» на складе",
                 ]);
             }
         }
-
         return back()->with('success', 'Продукт успешно добавлен с несколькими остатками.');
     }
+
 
 
     public function update(Request $request, $id) {
@@ -106,9 +112,14 @@ class ProductController extends Controller {
     }
 
     public function delete($id) {
-        $product = Product::findOrFail($id);
+        $product = Product::with('stocks')->findOrFail($id);
+
+        // Vérifier si le produit est utilisé dans des commandes
+        if ($product->orderItems()->exists()) {
+            return back()->with('error', 'Нельзя удалить продукт, используемый в заказах.');
+        }
+
         foreach ($product->stocks as $stock) {
-            // Сохранить движение удаления
             Movement::create([
                 'product_id' => $product->id,
                 'warehouse_id' => $stock->warehouse_id,
@@ -118,9 +129,12 @@ class ProductController extends Controller {
             ]);
             $stock->delete();
         }
+
         $product->delete();
+
         return back()->with('success', 'Продукт успешно удалён.');
     }
+
 
 
 }

@@ -33,13 +33,13 @@
                         </li>
 
                         <li class="submenu">
-                            <a href="{{ route('admin.products') }}" class="{{ request()->routeIs(['admin.products', 'admin.product.details']) ? 'active subdrop' : '' }}">
+                            <a href="{{ route('admin.products') }}" class="{{ request()->routeIs(['admin.products', 'admin.product.details', 'admin.product.add.form', 'admin.product.add']) ? 'active subdrop' : '' }}">
                                 <i class="ti ti-users-group"></i><span>Продукты</span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <ul>
                                 <li><a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products', 'admin.product.add') ? 'active' : '' }}">Все Продукты</a></li>
-                                <li><a href="#" class="{{ request()->routeIs('admin.product.add') ? 'active' : '' }}" data-bs-toggle="modal" data-bs-target="#add_product">Добавить Продукт</a></li>
+                                <li><a href="{{ route('admin.product.add.form') }}" class="{{ request()->routeIs('admin.product.add.form', 'admin.product.add') ? 'active' : '' }}">Добавить Продукт</a></li>
                             </ul>
                         </li>
 

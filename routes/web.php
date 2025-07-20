@@ -17,8 +17,10 @@ Route::put('/admin/warehouses/update/{id}', [WarehouseController::class, 'update
 
 // PRODUCTS CONTROLLER
 Route::get('/admin/products', [ProductController::class, 'index'])->name('admin.products');
+Route::get('/admin/products/add/form', [ProductController::class, 'addForm'])->name('admin.product.add.form');
 Route::post('/admin/products/add', [ProductController::class, 'add'])->name('admin.product.add');
 Route::delete('/admin/products/delete/{id}', [ProductController::class, 'delete'])->name('admin.product.delete');
+Route::get('/admin/products/{id}/edit', [ProductController::class, 'edit'])->name('admin.product.edit');
 Route::put('/admin/products/update/{id}', [ProductController::class, 'update'])->name('admin.product.update');
 
 // ORDERS CONTROLLER

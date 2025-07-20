@@ -130,18 +130,16 @@
                                             {{ optional($product->movements()->latest()->first())->created_at?->format('d/m/Y H:i') ?? '---' }}
                                         </td>
                                         <td>
-                                           <a href="javascript:void(0);" class="btn btn-sm btn-info"
-                                                data-id="{{ $product->id }}"
-                                                data-name="{{ $product->name }}"
-                                                data-price="{{ $product->price }}"
-                                                data-warehouse="{{ $product->stock->warehouse_id ?? '' }}"
-                                                data-stock="{{ $product->stock->stock ?? 0 }}"
-                                                onclick="openEditProductModal(this)">
+                                           <a href="{{ route('admin.product.edit', $product->id) }}" class="btn btn-sm btn-info">
                                                 <i class="ti ti-edit"></i>
                                             </a>
+
+                                            
+
+
                                             <a href="javascript:void(0);" class="btn btn-sm btn-danger"
-                                            data-bs-toggle="modal" data-bs-target="#delete_modal"
-                                            onclick="setDeleteLink({{ $product->id }})">
+                                                    data-bs-toggle="modal" data-bs-target="#delete_modal"
+                                                    onclick="setDeleteLink({{ $product->id }})">
                                                 <i class="ti ti-trash"></i>
                                             </a>
                                         </td>
