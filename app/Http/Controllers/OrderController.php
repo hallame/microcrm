@@ -69,10 +69,8 @@ class OrderController extends Controller {
         ))->with('filters', $request->all());
     }
     public function addForm(){
-
         // PRODUCTS
         $products = Product::all();
-
         // WAREHOUSES
         $warehouses = Warehouse::with(['stocks.product'])->get();
         foreach ($warehouses as $warehouse) {
@@ -84,7 +82,6 @@ class OrderController extends Controller {
                     'stock' => $s->stock,
                 ])->values();
         }
-
         return view('admin.orders.add', compact('products', 'warehouses', 'stocksGroupedByWarehouse'));
     }
 
@@ -149,8 +146,10 @@ class OrderController extends Controller {
                     'product_id' => $item['product_id'],
                     'warehouse_id' => $request->warehouse_id,
                     'quantity' => $item['count'],
-                    'type' => 'order'
+                    'type' => 'order',
+                    'reason' => "Заказ #{$order->id} создан",
                 ]);
+
             }
             DB::commit();
             return redirect()->back()->with('success', 'Заказ успешно создан.');
@@ -168,7 +167,6 @@ class OrderController extends Controller {
          if ($order->status === 'completed') {
             return back()->with('error', 'Нельзя изменить завершённый заказ.');
         }
-
         $stocksGroupedByWarehouse = Stock::with('product')
             ->get()
             ->groupBy('warehouse_id')
@@ -177,10 +175,8 @@ class OrderController extends Controller {
                 'product_name' => $s->product->name,
                 'stock' => $s->stock,
             ]));
-
         return view('admin.orders.edit', compact('order', 'warehouses', 'products', 'stocksGroupedByWarehouse'));
     }
-
 
     public function update(Request $request, $id) {
         $order = Order::findOrFail($id);
@@ -188,7 +184,6 @@ class OrderController extends Controller {
         if ($order->status === 'completed') {
             return back()->with('error', 'Нельзя изменить завершённый заказ.');
         }
-
         $request->validate([
             'customer' => 'required|string|max:255',
             'warehouse_id' => 'required|exists:warehouses,id',
@@ -215,9 +210,7 @@ class OrderController extends Controller {
             'items.*.count.min' => 'Минимальное количество — 1.',
         ]);
 
-
         $warehouseId = $request->warehouse_id;
-
         // 1. Восстановить старые запасы
         foreach ($order->items as $oldItem) {
             $stock = Stock::where('product_id', $oldItem->product_id)
@@ -253,7 +246,6 @@ class OrderController extends Controller {
         ]);
 
         $order->items()->delete();
-
         // 4. Добавить новые позиции и уменьшить запасы
         foreach ($request->items as $item) {
             $order->items()->create([
@@ -266,29 +258,42 @@ class OrderController extends Controller {
                 ->first();
 
             if ($stock) {
-                // $stock->stock -= $item['count'];
-                // $stock->save();
                 $stock->decrement('stock', $item['count']);
-
             }
+
+         // При обновлении заказа
+            Movement::create([
+                'product_id' => $item['product_id'],
+                'warehouse_id' => $warehouseId,
+                'quantity' => $item['count'],
+                'type' => 'update',
+                'reason' => "Обновление заказа #{$order->id}",
+            ]);
+
         }
-
         return back()->with('success', 'Заказ успешно обновлён.');
-
     }
-
-
 
     public function complete($id) {
         $order = Order::with('items')->findOrFail($id);
         if ($order->status !== 'active') {
             return back()->with('error', 'Только активные заказы могут быть завершены.');
         }
+
+        // Movemnt
+        foreach ($order->items as $item) {
+            Movement::create([
+                'product_id' => $item->product_id,
+                'warehouse_id' => $order->warehouse_id,
+                'quantity' => $item->count,
+                'type' => 'complete',
+                'reason' => "Заказ #{$order->id} завершён",
+            ]);
+        }
         $order->update([
             'status' => 'completed',
             'completed_at' => now()
         ]);
-
         return back()->with('success', 'Заказ успешно завершён.');
     }
 
@@ -304,6 +309,15 @@ class OrderController extends Controller {
             if ($stock) {
                 $stock->stock += $item->count;
                 $stock->save();
+
+                // Movement
+                Movement::create([
+                    'product_id' => $item->product_id,
+                    'warehouse_id' => $order->warehouse_id,
+                    'quantity' => $item->count,
+                    'type' => 'cancel',
+                    'reason' => "Заказ #{$order->id} отменён",
+                ]);
             }
         }
         $order->update([ 'status' => 'canceled']);
@@ -315,7 +329,7 @@ class OrderController extends Controller {
         if ($order->status !== 'canceled') {
             return back()->with('error', 'Только отменённые заказы могут быть возобновлены.');
         }
-       foreach ($order->items as $item) {
+        foreach ($order->items as $item) {
             $stock = Stock::where('product_id', $item->product_id)
                 ->where('warehouse_id', $order->warehouse_id)->first();
 
@@ -324,6 +338,15 @@ class OrderController extends Controller {
             }
             // Немедленное уменьшение
             $stock->decrement('stock', $item->count);
+
+         // При Возобновлении заказа
+             Movement::create([
+                'product_id' => $item->product_id,
+                'warehouse_id' => $order->warehouse_id,
+                'quantity' => $item->count,
+                'type' => 'reactivate',
+                'reason' => "Заказ #{$order->id} активирован",
+            ]);
         }
         // Обновление статуса
         $order->update(['status' => 'active']);

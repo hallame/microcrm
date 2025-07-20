@@ -25,7 +25,6 @@ class Movement extends Model {
     public function product() {
         return $this->belongsTo(Product::class);
     }
-
     /**
      * Движение связано со складом.
      */

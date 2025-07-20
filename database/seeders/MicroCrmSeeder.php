@@ -69,5 +69,20 @@ class MicroCrmSeeder extends Seeder {
             }
         }
 
+        //
+        $products = Product::all();
+        $warehouses = Warehouse::all();
+
+        foreach ($products as $product) {
+            foreach ($warehouses as $warehouse) {
+                Movement::create([
+                    'product_id' => $product->id,
+                    'warehouse_id' => $warehouse->id,
+                    'quantity' => rand(1, 50),
+                    'type' => collect(['order, create, cancel, update, reactivate, complete, delete'])->random(),
+                    'reason' => 'Автоматически генерируемое движение'
+                ]);
+            }
+        }
     }
 }

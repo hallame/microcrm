@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller {
 
-       public function index(){
+    public function index(){
         $products = Product::with(['stocks.warehouse'])->get();
         $totalWarehouses = Warehouse::count();
         $totalProductsInStock = Stock::distinct('product_id')->count();
@@ -64,6 +64,14 @@ class ProductController extends Controller {
             'stock' => $request->stock,
         ]);
 
+        // Movement register
+        Movement::create([
+            'product_id' => $product->id,
+            'warehouse_id' => $request->warehouse_id,
+            'quantity' => $request->stock,
+            'type' => 'create',
+            'reason' => "Создание продукта «{$product->name}» на складе",
+        ]);
         return back()->with('success', 'Продукт успешно добавлен.');
     }
 
@@ -110,12 +118,20 @@ class ProductController extends Controller {
 
     public function delete($id) {
         $product = Product::findOrFail($id);
-        $product->stocks()->delete();
+        foreach ($product->stocks as $stock) {
+            // Сохранить движение удаления
+            Movement::create([
+                'product_id' => $product->id,
+                'warehouse_id' => $stock->warehouse_id,
+                'quantity' => $stock->stock,
+                'type' => 'delete',
+                'reason' => "Удаление продукта «{$product->name}» и очистка остатков",
+            ]);
+            $stock->delete();
+        }
         $product->delete();
         return back()->with('success', 'Продукт успешно удалён.');
     }
-
-
 
 
 }

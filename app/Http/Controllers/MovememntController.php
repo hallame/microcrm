@@ -7,32 +7,30 @@ use App\Models\Stock;
 use Illuminate\Http\Request;
 
 class MovememntController extends Controller {
-    public function addStock(Request $request) {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'warehouse_id' => 'required|exists:warehouses,id',
-            'quantity' => 'required|integer|min:1',
-        ]);
+    public function index(Request $request) {
+        $query = Movement::with(['product', 'warehouse']);
 
-        // Mise à jour du stock
-        $stock = Stock::firstOrCreate([
-            'product_id' => $request->product_id,
-            'warehouse_id' => $request->warehouse_id,
-        ], [
-            'stock' => 0
-        ]);
+        if ($request->filled('warehouse_id')) {
+            $query->where('warehouse_id', $request->warehouse_id);
+        }
 
-        $stock->increment('stock', $request->quantity);
+        if ($request->filled('product_id')) {
+            $query->where('product_id', $request->product_id);
+        }
 
-        // Enregistrement du mouvement
-        Movement::create([
-            'product_id' => $request->product_id,
-            'warehouse_id' => $request->warehouse_id,
-            'quantity' => $request->quantity,
-            'type' => 'add'
-        ]);
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
 
-        return back()->with('success', 'Запас успешно пополнен');
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        $movements = $query->orderBy('created_at', 'desc')
+            ->paginate($request->get('per_page', 15));
+
+        return response()->json($movements);
     }
+
 
 }

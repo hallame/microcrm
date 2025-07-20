@@ -11,16 +11,13 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('movements', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('warehouse_id');
-            $table->unsignedBigInteger('product_id');
             $table->integer('quantity');
-            $table->string('type'); // 'in' ou 'out'
-            $table->timestamp('moved_at')->nullable(); 
-            $table->string('reason')->nullable();
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
+            $table->string('type')->comment('add, remove, create, cancel, update, manual'); // тип операции
+            $table->timestamp('moved_at')->nullable();
+            $table->text('reason')->nullable();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
-
         });
     }
 
