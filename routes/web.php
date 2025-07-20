@@ -5,9 +5,13 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MovementController;
 
 // DASHBOARD CONTROLLER
 Route::get('/', [DashboardController::class, 'dashboard'])->name('admin.dashboard');
+
+// MOVEMENTS CONTROLLER
+Route::get('/admin/movements', [MovementController::class, 'index'])->name('admin.movements');
 
 // WAREHOUSE CONTROLLER
 Route::get('/admin/warehouses', [WarehouseController::class, 'index'])->name('admin.warehouses');

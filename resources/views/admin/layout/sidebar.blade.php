@@ -23,7 +23,7 @@
 
                         <li class="submenu">
                             <a href="{{ route('admin.warehouses') }}" class="{{ request()->routeIs(['admin.warehouses', 'admin.warehouse.details']) ? 'active subdrop' : '' }}">
-                                <i class="ti ti-users-group"></i><span>Склады</span>
+                                <i class="ti ti-building-warehouse"></i><span>Склады</span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <ul>
@@ -34,7 +34,7 @@
 
                         <li class="submenu">
                             <a href="{{ route('admin.products') }}" class="{{ request()->routeIs(['admin.products', 'admin.product.edit', 'admin.product.add.form', 'admin.product.add']) ? 'active subdrop' : '' }}">
-                                <i class="ti ti-users-group"></i><span>Продукты</span>
+                                <i class="ti ti-package"></i><span>Продукты</span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <ul>
@@ -45,7 +45,7 @@
 
                          <li class="submenu">
                             <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs(['admin.orders', 'admin.order.edit', 'admin.order.add.form']) ? 'active subdrop' : '' }}">
-                                <i class="ti ti-users-group"></i><span>Заказы</span>
+                                <i class="ti ti-shopping-cart"></i><span>Заказы</span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <ul>
@@ -54,10 +54,9 @@
                             </ul>
                         </li>
 
-                        <li class="{{ request()->routeIs('admin.orders') ? 'active' : '' }}">
-                            <a href="{{ route('admin.orders') }}">
-                                <i class="ti ti-smart-home"></i><span> Заказы</span>
-                                <span class="badge badge-success fs-10 fw-medium text-white p-1">New</span>
+                        <li class="{{ request()->routeIs('admin.movements') ? 'active' : '' }}">
+                            <a href="{{ route('admin.movements') }}">
+                                <i class="ti ti-history"></i><span> История движений</span>
                             </a>
                         </li>
                     </ul>

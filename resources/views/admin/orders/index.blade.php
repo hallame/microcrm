@@ -185,37 +185,35 @@
                                             <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
                                             <td>
                                                 @if ($order->status === 'completed')
-                                                    <span class="">
-                                                        <i class="ti ti-lock"></i> Завершен
-                                                    </span>
+                                                    <span><i class="ti ti-lock"></i> Завершен</span>
                                                 @elseif ($order->status === 'canceled')
-                                                    <form action="{{ route('admin.order.reactivate', $order->id) }}" method="POST" style="display:inline-block;">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-secondary btn-sm"
-                                                            onclick="return confirm('Вы уверены, что хотите возобновить заказ?')">
-                                                            <i class="ti ti-refresh"></i> Возобновить
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="btn btn-secondary btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#confirmModal"
+                                                        data-action="{{ route('admin.order.reactivate', $order->id) }}"
+                                                        data-message="Вы уверены, что хотите возобновить заказ?">
+                                                        <i class="ti ti-refresh"></i> Возобновить
+                                                    </button>
                                                 @else
                                                     <a href="{{ route('admin.order.edit', $order->id) }}" class="btn btn-sm btn-info">
                                                         <i class="ti ti-edit"></i>
                                                     </a>
 
-                                                    <form action="{{ route('admin.order.complete', $order->id) }}" method="POST" style="display:inline-block;">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-success btn-sm"
-                                                            onclick="return confirm('Вы уверены, что хотите завершить заказ?')">
-                                                            <i class="ti ti-check"></i>
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="btn btn-success btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#confirmModal"
+                                                        data-action="{{ route('admin.order.complete', $order->id) }}"
+                                                        data-message="Вы уверены, что хотите завершить заказ?">
+                                                        <i class="ti ti-check"></i>
+                                                    </button>
 
-                                                    <form action="{{ route('admin.order.cancel', $order->id) }}" method="POST" style="display:inline-block;">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-danger btn-sm"
-                                                            onclick="return confirm('Вы уверены, что хотите отменить заказ?')">
-                                                            <i class="ti ti-x"></i>
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#confirmModal"
+                                                        data-action="{{ route('admin.order.cancel', $order->id) }}"
+                                                        data-message="Вы уверены, что хотите отменить заказ?">
+                                                        <i class="ti ti-x"></i>
+                                                    </button>
                                                 @endif
                                             </td>
 
@@ -322,28 +320,43 @@
         </div>
     </div>
 
-    <!-- Модальное окно: Подтверждение удаления -->
-    <div class="modal fade" id="delete_modal">
+   <!-- Модальное окно: Подтверждение действия -->
+    <div class="modal fade" id="confirmModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
                 <div class="modal-body text-center">
-                    <span class="avatar avatar-xl bg-transparent-danger text-danger mb-3">
-                        <i class="ti ti-trash-x fs-36"></i>
+                    <span class="avatar avatar-xl bg-transparent-warning text-warning mb-3">
+                        <i class="ti ti-alert-circle fs-36"></i>
                     </span>
-                    <h4 class="mb-1">Подтвердите удаление</h4>
-                    <p class="mb-3 text-danger">Удаление Заказа необратимо.</p>
-                    <div class="d-flex justify-content-center">
-                        <a href="javascript:void(0);" class="btn btn-light me-3" data-bs-dismiss="modal">Отмена</a>
-                        <form id="deleteForm" action="{{ route('admin.order.delete', ':id') }}" method="POST">
+                    <h4 class="mb-2" id="confirmMessage">Вы уверены?</h4>
+                    <div class="d-flex justify-content-center mt-3">
+                        <button type="button" class="btn btn-light me-3" data-bs-dismiss="modal">Отмена</button>
+                        <form method="POST" id="confirmForm" action="">
                             @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Да, удалить</button>
+                            <button type="submit" class="btn btn-primary">Да, подтвердить</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        const confirmModal = document.getElementById('confirmModal');
+        confirmModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const action = button.getAttribute('data-action');
+            const message = button.getAttribute('data-message');
+
+            const form = confirmModal.querySelector('#confirmForm');
+            const messageEl = confirmModal.querySelector('#confirmMessage');
+
+            form.setAttribute('action', action);
+            messageEl.textContent = message;
+        });
+    </script>
+
+
 
 
     <script>
