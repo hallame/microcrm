@@ -68,6 +68,12 @@ class ProductController extends Controller {
         return back()->with('success', 'Продукт успешно добавлен с несколькими остатками.');
     }
 
+    public function edit($id) {
+        $product = Product::with('stocks')->findOrFail($id);
+        $warehouses = Warehouse::all();
+
+        return view('admin.products.edit', compact('product', 'warehouses'));
+    }
 
 
     public function update(Request $request, $id) {
@@ -113,12 +119,9 @@ class ProductController extends Controller {
 
     public function delete($id) {
         $product = Product::with('stocks')->findOrFail($id);
-
-        // Vérifier si le produit est utilisé dans des commandes
         if ($product->orderItems()->exists()) {
             return back()->with('error', 'Нельзя удалить продукт, используемый в заказах.');
         }
-
         foreach ($product->stocks as $stock) {
             Movement::create([
                 'product_id' => $product->id,
