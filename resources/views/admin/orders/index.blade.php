@@ -323,7 +323,7 @@
     </div>
 
     <!-- Модальное окно: Подтверждение удаления -->
-    {{-- <div class="modal fade" id="delete_modal">
+    <div class="modal fade" id="delete_modal">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
                 <div class="modal-body text-center">
@@ -343,7 +343,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
 
     <script>

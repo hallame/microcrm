@@ -42,6 +42,18 @@ class ProductController extends Controller {
             'stocks.*.stock' => 'required|numeric|min:0',
         ]);
 
+        $selectedWarehouses = [];
+        foreach ($request->stocks as $index => $stockData) {
+            $wid = $stockData['warehouse_id'];
+            if (in_array($wid, $selectedWarehouses)) {
+                return back()->withErrors([
+                    "stocks.$index.warehouse_id" => "Склад уже выбран. Пожалуйста, выберите разные склады.",
+                ])->withInput();
+            }
+            $selectedWarehouses[] = $wid;
+        }
+
+
         $product = Product::create([
             'name' => $request->name,
             'price' => $request->price,
@@ -76,43 +88,53 @@ class ProductController extends Controller {
     }
 
 
-    public function update(Request $request, $id) {
-        // Валидация данных с пользовательскими сообщениями
+  public function update(Request $request, $id) {
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'warehouse_id' => 'required|exists:warehouses,id',
-            'stock' => 'required|numeric|min:0',
-
-        ], [
-            'name.required' => 'Пожалуйста, введите название продукта.',
-            'name.string' => 'Название должно быть текстом.',
-            'name.max' => 'Название не должно превышать 255 символов.',
-
-            'price.required' => 'Пожалуйста, укажите цену продукта.',
-            'price.numeric' => 'Цена должна быть числом.',
-            'price.min' => 'Цена не может быть меньше 0.',
-
-            'warehouse_id.required' => 'Пожалуйста, выберите склад.',
-            'warehouse_id.exists' => 'Выбранный склад не существует.',
-
-           'stock.required' => 'Пожалуйста, укажите количество на складе.',
-            'stock.numeric' => 'Количество должно быть числом.',
-            'stock.min' => 'Количество не может быть отрицательным.',
+            'stocks' => 'required|array|min:1',
+            'stocks.*.warehouse_id' => 'required|exists:warehouses,id',
+            'stocks.*.stock' => 'required|numeric|min:0',
         ]);
 
-        // Поиск продукта
+        $selectedWarehouses = [];
+
+        foreach ($request->stocks as $index => $stockData) {
+            $wid = $stockData['warehouse_id'];
+            if (in_array($wid, $selectedWarehouses)) {
+                return back()->withErrors([
+                    "stocks.$index.warehouse_id" => "Склад уже выбран. Пожалуйста, выберите разные склады.",
+                ])->withInput();
+            }
+            $selectedWarehouses[] = $wid;
+        }
+
         $product = Product::findOrFail($id);
         $product->update([
             'name' => $request->name,
             'price' => $request->price,
         ]);
+        // Удалить старые запасы
+        $product->stocks()->delete();
 
-        // Обновление записи на складе (предполагаем только одну связанную запись)
-        $stock = Stock::where('product_id', $product->id)->first();
-        if ($stock) {
-            $stock->warehouse_id = $request->warehouse_id;
-            $stock->save();
+        // Повторно вставьте новые запасы
+        foreach ($request->stocks as $stockData) {
+            if (!empty($stockData['warehouse_id']) && $stockData['stock'] > 0) {
+                Stock::create([
+                    'product_id' => $product->id,
+                    'warehouse_id' => $stockData['warehouse_id'],
+                    'stock' => $stockData['stock'],
+                ]);
+
+                // Добавить запись движения
+                Movement::create([
+                    'product_id' => $product->id,
+                    'warehouse_id' => $stockData['warehouse_id'],
+                    'quantity' => $stockData['stock'],
+                    'type' => 'update',
+                    'reason' => "Обновление продукта #{$product->id}",
+                ]);
+            }
         }
         return back()->with('success', 'Продукт успешно обновлён.');
     }

@@ -115,7 +115,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $product->name }}</td>
                                         <td>{{ $product->stocks->sum('stock') }} единиц</td>
-                                        <td>{{ number_format($product->price, 2, ',', ' ') }} ₽</td>
+                                        <td>{{ number_format($product->price, 0, ',', ' ') }} ₽</td>
                                         <td>
                                             @forelse($product->stocks as $stock)
                                                 <div>
@@ -134,7 +134,7 @@
                                                 <i class="ti ti-edit"></i>
                                             </a>
 
-                                            
+
 
 
                                             <a href="javascript:void(0);" class="btn btn-sm btn-danger"
