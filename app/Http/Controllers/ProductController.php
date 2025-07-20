@@ -27,53 +27,42 @@ class ProductController extends Controller {
                                     ));
     }
 
-    public function add(Request $request) {
-        // Валидация входных данных с пользовательскими сообщениями об ошибках
+
+    public function add(Request $request){
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'warehouse_id' => 'required|exists:warehouses,id',
-            'stock' => 'required|numeric|min:0',
-        ], [
-            'name.required' => 'Пожалуйста, введите название продукта.',
-            'name.string' => 'Название должно быть текстом.',
-            'name.max' => 'Название не должно превышать 255 символов.',
-
-            'price.required' => 'Пожалуйста, укажите цену продукта.',
-            'price.numeric' => 'Цена должна быть числом.',
-            'price.min' => 'Цена не может быть меньше 0.',
-
-            'warehouse_id.required' => 'Пожалуйста, выберите склад.',
-            'warehouse_id.exists' => 'Выбранный склад не существует.',
-
-            'stock.required' => 'Пожалуйста, укажите количество на складе.',
-            'stock.numeric' => 'Количество должно быть числом.',
-            'stock.min' => 'Количество не может быть отрицательным.',
+            'stocks' => 'required|array|min:1',
+            'stocks.*.warehouse_id' => 'required|exists:warehouses,id',
+            'stocks.*.stock' => 'required|numeric|min:0',
         ]);
 
-        // Создание нового продукта
         $product = Product::create([
             'name' => $request->name,
             'price' => $request->price,
         ]);
 
-        // Создание записи на складе с нулевым остатком
-        Stock::create([
-            'product_id' => $product->id,
-            'warehouse_id' => $request->warehouse_id,
-            'stock' => $request->stock,
-        ]);
+        foreach ($request->stocks as $entry) {
+            $stock = Stock::create([
+                'product_id' => $product->id,
+                'warehouse_id' => $entry['warehouse_id'],
+                'stock' => $entry['stock'],
+            ]);
 
-        // Movement register
-        Movement::create([
-            'product_id' => $product->id,
-            'warehouse_id' => $request->warehouse_id,
-            'quantity' => $request->stock,
-            'type' => 'create',
-            'reason' => "Создание продукта «{$product->name}» на складе",
-        ]);
-        return back()->with('success', 'Продукт успешно добавлен.');
+            if ($entry['stock'] > 0) {
+                Movement::create([
+                    'product_id' => $product->id,
+                    'warehouse_id' => $entry['warehouse_id'],
+                    'quantity' => $entry['stock'],
+                    'type' => 'create',
+                    'reason' => 'Начальный запас при создании продукта',
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Продукт успешно добавлен с несколькими остатками.');
     }
+
 
     public function update(Request $request, $id) {
         // Валидация данных с пользовательскими сообщениями

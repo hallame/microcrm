@@ -89,10 +89,6 @@
         </div>
     </div>
 
-
-
-
-
     <div class="row">
         <div class="col-xl-12 d-flex">
             <div class="card flex-fill">
@@ -160,95 +156,6 @@
         </div>
     </div>
 
-  <!-- Модальное окно: Добавить продукт -->
-<div class="modal fade" id="add_product" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Добавить продукт</h4>
-                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Закрыть">
-                    <i class="ti ti-x"></i>
-                </button>
-            </div>
-            <form action="{{ route('admin.product.add') }}" method="POST">
-                @csrf
-                <div class="modal-body pb-0">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Название продукта <span class="text-danger">*</span></label>
-                        <input type="text" id="name" name="name" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="price" class="form-label">Цена (₽) <span class="text-danger">*</span></label>
-                        <input type="number" step="0.01" id="price" name="price" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="warehouse_id" class="form-label">Склад <span class="text-danger">*</span></label>
-                        <select name="warehouse_id" id="warehouse_id" class="form-control" required>
-                            @foreach($warehouses as $warehouse)
-                                <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="stock" class="form-label">Начальный остаток <span class="text-danger">*</span></label>
-                        <input type="number" id="stock" name="stock" class="form-control" min="0" required>
-                    </div>
-                    <div class="text-end me-3 mb-3">
-                        <button type="submit" class="btn btn-primary">Сохранить</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-
-  <!-- Модальное окно: Редактировать продукт -->
-<div class="modal fade" id="edit_product" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Редактировать продукт</h5>
-                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Закрыть">
-                    <i class="ti ti-x"></i>
-                </button>
-            </div>
-            <form id="editProductForm" method="POST" action="">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="edit_name" class="form-label">Название продукта</label>
-                        <input type="text" id="edit_name" name="name" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_price" class="form-label">Цена (₽)</label>
-                        <input type="number" id="edit_price" name="price" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_warehouse_id" class="form-label">Склад</label>
-                        <select name="warehouse_id" id="edit_warehouse_id" class="form-control" required>
-                            @foreach($warehouses as $warehouse)
-                                <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_stock" class="form-label">Остаток</label>
-                        <input type="number" id="edit_stock" name="stock" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-primary mx-1">Сохранить</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
     <!-- Модальное окно: Подтверждение удаления -->
     <div class="modal fade" id="delete_modal">
         <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -276,18 +183,6 @@
             const form = document.getElementById('deleteForm');
             const action = form.getAttribute('action').replace(':id', id);
             form.setAttribute('action', action);
-        }
-
-        function openEditProductModal(el) {
-            const form = document.getElementById('editProductForm');
-
-            form.action = `/admin/products/update/${el.dataset.id}`;
-            document.getElementById('edit_name').value = el.dataset.name;
-            document.getElementById('edit_price').value = el.dataset.price;
-            document.getElementById('edit_warehouse_id').value = el.dataset.warehouse;
-            document.getElementById('edit_stock').value = el.dataset.stock;
-
-            new bootstrap.Modal(document.getElementById('edit_product')).show();
         }
     </script>
 @endsection
