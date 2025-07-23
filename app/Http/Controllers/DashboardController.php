@@ -42,7 +42,7 @@ class DashboardController extends Controller {
                 ->take(5);
 
                 //Список складов
-        $warehouses = Warehouse::with('stocks')->latest()->take(5)->get();
+        $warehouses = Warehouse::with('stocks')->latest()->take(3)->get();
 
         // Получаем 5 последних движений товаров
         $latestMovements = Movement::with('product', 'warehouse')

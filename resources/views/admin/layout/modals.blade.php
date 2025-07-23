@@ -24,8 +24,6 @@
     </div>
 </div>
 
-
-
   <!-- Модальное окно: Добавить продукт -->
 <div class="modal fade" id="add_product" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-md">

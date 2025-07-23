@@ -18,9 +18,9 @@ class MicroCrmSeeder extends Seeder {
      */
     public function run(): void {
         // 1. Создаем склады
-        $warehouses = Warehouse::factory()->count(10)->create();
+        $warehouses = Warehouse::factory()->count(5)->create();
         // 2. Создаем продукты
-        $products = Product::factory()->count(100)->create();
+        $products = Product::factory()->count(20)->create();
 
         // 3. Заполняем остатки (stocks)
         foreach ($warehouses as $warehouse) {
@@ -34,7 +34,7 @@ class MicroCrmSeeder extends Seeder {
         }
 
         // 4. Создаем несколько заказов
-        for ($i = 0; $i < 205; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $warehouse = $warehouses->random();
 
             $order = Order::create([

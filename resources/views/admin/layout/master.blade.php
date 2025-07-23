@@ -5,21 +5,23 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') | Micro CRM</title>
-    <meta name="description" content="Découvrez Zaly Merveille, la plateforme dédiée à la valorisation du patrimoine culturel et naturel de la Guinée Forestière. Explorez des sites uniques, réservez vos visites et plongez dans l'histoire et les traditions locales.">
-	<meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Micro CRM — система управления товарами, складами и заказами, разработанная на Laravel. Поддерживает REST API, фильтрацию, историю движений и генерацию тестовых данных.">
+    <meta name="keywords" content="Laravel, CRM, склад, товары, заказы, API, PHP, система управления, REST API">
+    <meta name="author" content="hallame">
 
-    <meta property="og:image" content="{{ asset('assets/images/admin.png') }}">
+
+    <meta property="og:image" content="{{ asset('assets/images/box.png') }}">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
 
 
 	<!-- Apple Touch Icon -->
-	<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/logo.jpg') }}">
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/box.png') }}">
 
 	<!-- Favicon -->
-	<link rel="icon" href="{{ asset('assets/images/logo.jpg') }}" type="image/x-icon">
-	<link rel="shortcut icon" href="{{ asset('assets/images/logo.jpg') }}" type="image/x-icon">
+	<link rel="icon" href="{{ asset('assets/images/box.png') }}" type="image/x-icon">
+	<link rel="shortcut icon" href="{{ asset('assets/images/box.png') }}" type="image/x-icon">
 
 	<!-- Theme Script js -->
 	<script src="{{ asset('assets/back/js/theme-script.js') }}"></script>
