@@ -28,7 +28,7 @@ class MovementApiController extends Controller {
             $query->whereDate('created_at', '<=', $request->to);
         }
         // Пагинация
-        $perPage = $request->input('per_page', 15);
+        $perPage = $request->input('per_page', 10);
         $movements = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
         return response()->json($movements);

@@ -14,8 +14,7 @@ class ProductFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
-    {
+    public function definition(): array {
         return [
             'name' => 'Продукт ' . fake()->word(),
             'price' => fake()->randomFloat(2, 10, 500)

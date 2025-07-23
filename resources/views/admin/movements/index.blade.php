@@ -3,7 +3,6 @@
 
 @section('content')
     <h3 class="mb-4">История движений товаров</h3>
-
     <form method="GET" action="{{ route('admin.movements') }}" class="row g-3 mb-4">
         <div class="col-md-3">
             <label for="product_id" class="form-label">Продукт</label>
@@ -48,19 +47,45 @@
                     <th>Продукт</th>
                     <th>Склад</th>
                     <th>Тип</th>
-                    <th>Количество</th>
+                    <th>Кол-во</th>
+                     <th>Дата</th>
+
                     <th>Причина</th>
-                    <th>Дата</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($movements as $movement)
+                        @php
+                            $type = $movement->type;
+                            $bgColor = match($type) {
+                                'create'     => 'bg-success',
+                                'update'     => 'bg-primary',
+                                'cancel'     => 'bg-danger',
+                                'complete'   => 'bg-warning',
+                                'reactivate' => 'bg-info',
+                                'delete'     => 'bg-dark',
+                                'order'      => 'bg-secondary',
+                                default      => 'bg-purple',
+                            };
+                            $typeLabel = match($type) {
+                                'create'     => 'Создание',
+                                'update'     => 'Обновление',
+                                'cancel'     => 'Отмена',
+                                'complete'   => 'Завершение',
+                                'reactivate' => 'Возобновление',
+                                'delete'     => 'Удаление',
+                                'order'      => 'Заказ',
+                                default      => 'Неизвестно',
+                            };
+                        @endphp
                     <tr>
                         <td>{{ $movement->id }}</td>
                         <td>{{ $movement->product->name ?? '-' }}</td>
                         <td>{{ $movement->warehouse->name ?? '-' }}</td>
-                        <td>{{ $movement->type }}</td>
+                        <td>{{ $typeLabel }}</td>
                         <td>{{ $movement->quantity }}</td>
+                        <td>{{ $movement->created_at->format('d/m/Y H:i') }}</td>
+
                         <td>{{ $movement->reason }}</td>
                     </tr>
                 @empty
@@ -71,8 +96,7 @@
             </tbody>
         </table>
     </div>
-
-    <div class="d-flex justify-content-center">
-        {{ $movements->withQueryString()->links() }}
+    <div class="d-flex justify-content-center mt-3">
+        {{ $movements->withQueryString()->links('pagination::bootstrap-5') }}
     </div>
 @endsection

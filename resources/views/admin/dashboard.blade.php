@@ -253,7 +253,6 @@
                             @php
                                 $quantity = $movement->quantity;
                                 $type = $movement->type;
-
                                 $bgColor = match($type) {
                                     'create'     => 'bg-success',
                                     'update'     => 'bg-primary',
@@ -264,7 +263,6 @@
                                     'order'      => 'bg-secondary',
                                     default      => 'bg-purple',
                                 };
-
                                 $typeLabel = match($type) {
                                     'create'     => 'Создание',
                                     'update'     => 'Обновление',
