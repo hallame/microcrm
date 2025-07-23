@@ -43,13 +43,11 @@
         <table class="table table-bordered align-middle">
             <thead>
                 <tr>
-                    <th>#</th>
                     <th>Продукт</th>
                     <th>Склад</th>
                     <th>Тип</th>
                     <th>Кол-во</th>
                      <th>Дата</th>
-
                     <th>Причина</th>
                 </tr>
             </thead>
@@ -64,7 +62,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            fetchMovements(); // chargement initial
+            fetchMovements();
 
             function buildPagination(links) {
                 const container = document.getElementById('pagination-links');
@@ -73,24 +71,39 @@
                 links.forEach(link => {
                     const a = document.createElement('a');
                     a.classList.add('btn', 'btn-sm', 'mx-1');
-                    if (link.active) a.classList.add('btn-primary');
-                    else a.classList.add('btn-outline-primary');
 
-                    a.innerHTML = link.label.replace(/&laquo;|&raquo;/g, ''); // Nettoyage
-                    a.href = link.url || '#';
+                    // active/inactive
+                    if (link.active) {
+                        a.classList.add('btn-primary');
+                    } else {
+                        a.classList.add('btn-outline-primary');
+                    }
 
+                    // previous/next
+                    if (link.label.includes('previous')) {
+                        a.innerHTML = '← Предыдущая';
+                    } else if (link.label.includes('next')) {
+                        a.innerHTML = 'Следующая →';
+                    } else {
+                        a.innerHTML = link.label;
+                    }
+
+                    // manage click
                     if (link.url) {
+                        a.href = link.url;
                         a.addEventListener('click', function (e) {
                             e.preventDefault();
-                            fetchMovements(link.url);
+                            fetchMovements(link.url); // API request
                         });
                     } else {
                         a.classList.add('disabled');
+                        a.href = '#';
                     }
 
                     container.appendChild(a);
                 });
             }
+
 
             function fetchMovements(url = '/api/movements' + window.location.search) {
                 fetch(url)
@@ -117,7 +130,6 @@
 
                             tbody.innerHTML += `
                                 <tr>
-                                    <td>${movement.id}</td>
                                     <td>${movement.product?.name || '-'}</td>
                                     <td>${movement.warehouse?.name || '-'}</td>
                                     <td>${typeLabel}</td>
@@ -133,6 +145,22 @@
             }
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const filters = ['product_id', 'warehouse_id', 'from', 'to'];
+
+            filters.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('change', () => {
+                        document.forms[0].submit(); // automatic submit after choice
+                    });
+                }
+            });
+        });
+    </script>
+
 
 @endsection
 

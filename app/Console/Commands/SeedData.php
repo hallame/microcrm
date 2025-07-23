@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Movement;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\Warehouse;
@@ -9,59 +10,51 @@ use Illuminate\Console\Command;
 
 class SeedData extends Command {
 
-
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-
-    protected $signature = 'seed:demo-data';
-
-    // protected $signature = 'app:seed-data';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Наполнить справочники товарами, складами и остатками';
-
-    /**
-     * Execute the console command.
-     */
+    protected $signature = 'seed:test-data';
+    protected $description = 'Генерация тестовых данных: склады, товары, остатки и движения';
 
     public function handle() {
-        $this->info('Очистка таблиц...');
-        Stock::truncate();
-        Product::truncate();
-        Warehouse::truncate();
-
-        $this->info('Создание складов...');
+        $this->info('Генерация складов...');
         $warehouses = collect();
-        foreach (range(1, 10) as $i) {
+        foreach (range(1, 5) as $i) {
             $warehouses->push(Warehouse::create([
                 'name' => 'Склад ' . $i,
             ]));
         }
 
-        $this->info('Создание продуктов и остатков...');
+        $this->info('Генерация продуктов...');
+        $products = collect();
         foreach (range(1, 10) as $i) {
-            $product = Product::create([
-                'name' => 'Продукт ' . $i,
+            $products->push(Product::create([
+                'name' => 'Товар ' . $i,
                 'price' => rand(100, 1000),
-            ]);
+            ]));
+        }
 
+        $this->info('Генерация остатков и движений...');
+        foreach ($products as $product) {
             foreach ($warehouses as $warehouse) {
+                $quantity = rand(5, 50);
+
+                // Stock
                 Stock::create([
                     'product_id' => $product->id,
                     'warehouse_id' => $warehouse->id,
-                    'stock' => rand(0, 100),
+                    'stock' => $quantity,
+                ]);
+
+                // Movement
+                Movement::create([
+                    'product_id' => $product->id,
+                    'warehouse_id' => $warehouse->id,
+                    'quantity' => $quantity,
+                    'type' => 'create',
+                    'reason' => 'Начальная загрузка',
+                    'moved_at' => now(),
                 ]);
             }
         }
 
-        $this->info('Данные успешно сгенерированы !');
-        return Command::SUCCESS;
+        $this->info('✅ Данные успешно сгенерированы.');
     }
 }
