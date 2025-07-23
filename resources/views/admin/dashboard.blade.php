@@ -295,8 +295,8 @@
                                 </div>
 
                                 <div class="d-flex align-items-center">
-                                    <span class="fw-bold fs-14">
-                                        <i class="ti ti-clock fs-16 me-1"></i>
+                                    <span class="fw-bold fs-12">
+                                        <i class="ti ti-clock fs-14 me-1"></i>
                                         {{ $movement->created_at->format('d.m.Y H:i') }}
                                     </span>
                                 </div>

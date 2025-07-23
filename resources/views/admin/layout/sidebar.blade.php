@@ -53,8 +53,8 @@
                             </ul>
                         </li>
 
-                        <li class="{{ request()->routeIs('api.movements') ? 'active' : '' }}">
-                            <a href="{{ route('api.movements') }}">
+                        <li class="{{ request()->routeIs('admin.movements') ? 'active' : '' }}">
+                            <a href="{{ route('admin.movements') }}">
                                 <i class="ti ti-history"></i><span> История движений</span>
                             </a>
                         </li>

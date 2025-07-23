@@ -5,6 +5,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MovementController;
 
 // DASHBOARD CONTROLLER
 Route::get('/', [DashboardController::class, 'dashboard'])->name('admin.dashboard');
@@ -33,3 +34,6 @@ Route::put('/admin/orders/{id}/update', [OrderController::class, 'update'])->nam
 Route::post('/admin/orders/{id}/complete', [OrderController::class, 'complete'])->name('admin.order.complete');
 Route::post('/admin/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('admin.order.cancel');
 Route::post('/admin/orders/{id}/reactivate', [OrderController::class, 'reactivate'])->name('admin.order.reactivate');
+
+// MOVEMENTS CONTROLLER
+Route::get('/admin/movements', [MovementController::class, 'index'])->name('admin.movements');
