@@ -31,7 +31,6 @@
                                 <li><a href="#" class="{{ request()->routeIs('admin.warehouse.add') ? 'active' : '' }}" data-bs-toggle="modal" data-bs-target="#add_warehouse">Добавить склад</a></li>
                             </ul>
                         </li>
-
                         <li class="submenu">
                             <a href="{{ route('admin.products') }}" class="{{ request()->routeIs(['admin.products', 'admin.product.edit', 'admin.product.add.form', 'admin.product.add']) ? 'active subdrop' : '' }}">
                                 <i class="ti ti-package"></i><span>Продукты</span>

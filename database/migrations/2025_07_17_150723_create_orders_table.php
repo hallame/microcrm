@@ -12,7 +12,6 @@ return new class extends Migration {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('customer', 255);
-            $table->timestamp('completed_at');
             $table->unsignedBigInteger('warehouse_id');
             $table->string('status')
                 ->default('pending')
