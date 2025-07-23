@@ -246,9 +246,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="mt-3">
-                            {{ $orders->withQueryString()->links('pagination::bootstrap-5') }}
-                        </div>
+                        <div class="d-flex justify-content-center mt-3" id="pagination-links"></div>
                     @endif
                 </div>
             </div>
@@ -435,5 +433,62 @@
         }
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchOrders();
+
+            function fetchOrders(url = '/api/orders' + window.location.search) {
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        const tbody = document.getElementById('orders-table-body');
+                        tbody.innerHTML = '';
+
+                        if (data.data.length === 0) {
+                            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">Нет данных</td></tr>`;
+                            return;
+                        }
+
+                        data.data.forEach(order => {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td>${order.id}</td>
+                                    <td>${order.customer}</td>
+                                    <td>${order.status}</td>
+                                    <td>${new Date(order.created_at).toLocaleString('ru-RU')}</td>
+                                </tr>
+                            `;
+                        });
+
+                        buildPagination(data.links);
+                    });
+            }
+
+            function buildPagination(links) {
+                const container = document.getElementById('pagination-links');
+                container.innerHTML = '';
+
+                links.forEach(link => {
+                    const a = document.createElement('a');
+                    a.classList.add('btn', 'btn-sm', 'mx-1');
+                    a.innerHTML = link.label.replace(/&laquo;|&raquo;/g, '');
+                    a.href = link.url || '#';
+
+                    if (link.active) a.classList.add('btn-primary');
+                    else if (!link.url) a.classList.add('disabled');
+                    else a.classList.add('btn-outline-primary');
+
+                    if (link.url) {
+                        a.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            fetchOrders(link.url);
+                        });
+                    }
+
+                    container.appendChild(a);
+                });
+            }
+        });
+    </script>
 
 @endsection
