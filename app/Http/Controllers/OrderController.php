@@ -27,7 +27,7 @@ class OrderController extends Controller {
         $query = $this->applyFilters($request, $query);
 
         // Параметр постраничной навигации
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 15);
         $orders = $query->paginate($perPage);
 
         // Статистика
