@@ -10,11 +10,11 @@
             </div>
             <div class="d-flex align-items-center flex-wrap mb-1">
                 <!-- Кнопка: Добавить продукт -->
-                <a href="#" class="btn btn-dark btn-md me-2 mb-2">
+                <a href="{{ route('admin.product.add.form') }}" class="btn btn-dark btn-md me-2 mb-2">
                     <i class="ti ti-circle-plus me-2"></i>Добавить продукт
                 </a>
                 <!-- Кнопка: Добавить заказ -->
-                <a href="#" class="btn btn-light btn-md mb-2">
+                <a href="{{ route('admin.order.add.form') }}" class="btn btn-light btn-md mb-2">
                     <i class="ti ti-calendar me-2"></i>Создать заказ
                 </a>
             </div>
@@ -130,10 +130,11 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Клиент</th>
+                                        <th>Продукты</th>
+                                        <th>Итого</th>
                                         <th>Склад</th>
                                         <th>Статус</th>
                                         <th>Дата создания</th>
-                                        <th>Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -141,6 +142,14 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $order->customer }}</td>
+                                            <td>
+                                                @foreach($order->items as $item)
+                                                    • {{ $item->product->name ?? 'удалено' }} (x{{ $item->count }})<br>
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                {{ number_format($order->items->sum(fn($pos) => $pos->product->price * $pos->count), 2, ',', ' ') }} ₽
+                                            </td>
                                             <td>{{ $order->warehouse->name ?? '—' }}</td>
                                             <td>
                                                 @if($order->status === 'completed')
@@ -151,10 +160,8 @@
                                                     <span class="badge bg-warning">Активен</span>
                                                 @endif
                                             </td>
-                                            <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d.m.Y') }}</td>
-                                            <td>
-                                                <a href="{{ route('admin.orders', $order->id) }}" class="btn btn-sm btn-info">Детали</a>
-                                            </td>
+                                            <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
+
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -246,20 +253,27 @@
                             @php
                                 $quantity = $movement->quantity;
                                 $type = $movement->type;
+
                                 $bgColor = match($type) {
-                                    'add' => 'bg-success',
-                                    'remove' => 'bg-primary',
-                                    'order' => 'bg-warning',
-                                    'cancel' => 'bg-danger',
-                                    default => 'bg-secondary'
+                                    'create'     => 'bg-success',
+                                    'update'     => 'bg-primary',
+                                    'cancel'     => 'bg-danger',
+                                    'complete'   => 'bg-warning',
+                                    'reactivate' => 'bg-info',
+                                    'delete'     => 'bg-dark',
+                                    'order'      => 'bg-secondary',
+                                    default      => 'bg-purple',
                                 };
 
                                 $typeLabel = match($type) {
-                                    'add' => 'Добавление',
-                                    'remove' => 'Списание',
-                                    'order' => 'Заказ',
-                                    'cancel' => 'Отмена',
-                                    default => 'Неизвестно'
+                                    'create'     => 'Создание',
+                                    'update'     => 'Обновление',
+                                    'cancel'     => 'Отмена',
+                                    'complete'   => 'Завершение',
+                                    'reactivate' => 'Возобновление',
+                                    'delete'     => 'Удаление',
+                                    'order'      => 'Заказ',
+                                    default      => 'Неизвестно',
                                 };
                             @endphp
 
@@ -321,7 +335,7 @@
                                         <th>Цена</th>
                                         <th>Склады</th>
                                         <th>Общий остаток</th>
-                                        <th>Детали</th>
+                                        <th>Обновлен</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -347,13 +361,10 @@
                                             </td>
 
                                             {{-- Общий остаток по всем складам --}}
-                                            <td>{{ $product->stocks->sum('stock') }}</td>
+                                            <td>{{ $product->stocks->sum('stock') }} единиц</td>
 
-                                            {{-- Ссылка на страницу деталей (пока не активна) --}}
                                             <td>
-                                                <a href="#" class="btn btn-sm btn-info">
-                                                    Посмотреть
-                                                </a>
+                                                {{ optional($product->movements()->latest()->first())->created_at?->format('d/m/Y H:i') ?? '---' }}
                                             </td>
                                         </tr>
                                     @endforeach

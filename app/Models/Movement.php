@@ -31,4 +31,5 @@ class Movement extends Model {
     public function warehouse() {
         return $this->belongsTo(Warehouse::class);
     }
+
 }

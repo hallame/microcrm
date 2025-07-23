@@ -14,7 +14,7 @@
     <div class="modal-body pb-0">
         <div class="mb-3">
             <label for="customer" class="form-label">Имя клиента <span class="text-danger">*</span></label>
-            <input type="text" id="customer" name="customer" class="form-control" required>
+            <input type="text" id="customer" name="customer" class="form-control" placeholder="Введите Имя клиента" required>
         </div>
 
         <div class="mb-3">

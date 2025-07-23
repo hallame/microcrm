@@ -79,7 +79,7 @@ class MicroCrmSeeder extends Seeder {
                     'product_id' => $product->id,
                     'warehouse_id' => $warehouse->id,
                     'quantity' => rand(1, 50),
-                    'type' => collect(['order, create, cancel, update, reactivate, complete, delete'])->random(),
+                    'type' => collect(['order', 'create', 'cancel', 'update', 'reactivate', 'complete', 'delete'])->random(),
                     'reason' => 'Автоматически генерируемое движение'
                 ]);
             }

@@ -8,10 +8,9 @@ use Illuminate\Http\Request;
 
 class MovementApiController extends Controller {
 
-    
+
     public function index(Request $request) {
         $query = Movement::with(['product', 'warehouse']);
-
         // фильтры
         if ($request->filled('product_id')) {
             $query->where('product_id', $request->product_id);
@@ -28,7 +27,6 @@ class MovementApiController extends Controller {
         if ($request->filled('to')) {
             $query->whereDate('created_at', '<=', $request->to);
         }
-
         // Пагинация
         $perPage = $request->input('per_page', 15);
         $movements = $query->orderBy('created_at', 'desc')->paginate($perPage);

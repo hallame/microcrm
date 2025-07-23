@@ -134,9 +134,6 @@
                                                 <i class="ti ti-edit"></i>
                                             </a>
 
-
-
-
                                             <a href="javascript:void(0);" class="btn btn-sm btn-danger"
                                                     data-bs-toggle="modal" data-bs-target="#delete_modal"
                                                     onclick="setDeleteLink({{ $product->id }})">
