@@ -1,11 +1,11 @@
-# 🛠️ Micro CRM — Product and Order Management System
+# Micro CRM — Product and Order Management System
 
 This project was developed as part of a **technical test**.  
 It is a system for managing products, warehouses, orders, and stock movements, built with Laravel.
 
 ---
 
-## 🖼️ Screenshots
+## Screenshots
 
 | Dashboard | Dashboard 2 | Warehouses |
 |-----------|-------------|------------|
@@ -24,7 +24,7 @@ It is a system for managing products, warehouses, orders, and stock movements, b
 ---
 
 
-## 🚀 Technologies Used
+## Technologies Used
 
 - PHP 8.3.17
 - Laravel 12.2
@@ -36,7 +36,7 @@ It is a system for managing products, warehouses, orders, and stock movements, b
 
 ---
 
-## 📦 Features
+## Features
 
 ### Part 1: Basic Management
 - CRUD operations for products
