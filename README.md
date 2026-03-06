@@ -79,5 +79,5 @@
 **Hormise ALLAME**
 - Full Stack разработчик
 - Telegram: @hormise
-- Email: hormiseallame3@gmail.com
+- Site: [OMIZIX.COM](https://omizix.com)
 
