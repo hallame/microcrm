@@ -68,7 +68,7 @@ class MicroCrmSeeder extends Seeder {
             }
         }
 
-        //
+        
         $products = Product::all();
         $warehouses = Warehouse::all();
 
