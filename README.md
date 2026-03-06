@@ -11,7 +11,7 @@ It is a system for managing products, warehouses, orders, and stock movements, b
 |-----------|-------------|------------|
 | ![Dashboard](public/assets/images/dashboard.png) | ![Dashboard](public/assets/images/dashboard1.png) | ![Warehouses](public/assets/images/warehourses.png) |
 
-| Add Warehouse | Products | Add Product |
+| Products | Add Product |
 |---------------|---------|------------|
 | ![Products](public/assets/images/products.png) | ![Add Product](public/assets/images/product-add.png) |
 
