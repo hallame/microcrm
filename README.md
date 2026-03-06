@@ -9,7 +9,7 @@ It is a system for managing products, warehouses, orders, and stock movements, b
 
 | Dashboard | Dashboard 2 | Warehouses |
 |-----------|-------------|------------|
-| ![Dashboard](public/assets/images/dasboard.png) | ![Dashboard](public/assets/images/dasboard1.png) | ![Warehouses](public/assets/images/warehourses.png) |
+| ![Dashboard](public/assets/images/dashboard.png) | ![Dashboard](public/assets/images/dashboard1.png) | ![Warehouses](public/assets/images/warehourses.png) |
 
 | Add Warehouse | Products | Add Product |
 |---------------|---------|------------|
@@ -55,7 +55,7 @@ It is a system for managing products, warehouses, orders, and stock movements, b
 
 - You can generate test data using the following Artisan command:
 
-- ```bash
+```bash
 php artisan seed:test-data 
 ```
 
@@ -67,7 +67,7 @@ Will automatically create:
 - Product movement history
 
 
-## 🔗 API Endpoint
+## API Endpoint
 
 **GET** `/api/movements`
 
@@ -81,13 +81,13 @@ Allows fetching a list of product movements with support for filters and paginat
 - `to` — End date (format YYYY-MM-DD)
 - `per_page` — Number of records per page (default 15)
 
-### 📌 Example Request:
+### Example Request:
 
 ```http
 GET /api/movements?product_id=5&warehouse_id=2&from=2024-01-01&to=2024-12-31&per_page=5
 ```
 
-# ⚙️ Project Setup
+# Project Setup
 
 ```bash
 git clone https://github.com/hallame/microcrm.git
@@ -102,7 +102,7 @@ php artisan serve
 ```
 
 
-## 👤 Author
+## Author
 **Hormise ALLAME**
 - Full Stack Developer
 - Telegram: @hormise
