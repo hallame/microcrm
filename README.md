@@ -2,8 +2,27 @@
 
 This project was developed as part of a **technical test**.  
 It is a system for managing products, warehouses, orders, and stock movements, built with Laravel.
-![Dashboard Screenshot](public/assets/images/microcrm.png)
+
 ---
+
+## 🖼️ Screenshots
+
+| Dashboard | Dashboard 2 | Warehouses |
+|-----------|-------------|------------|
+| ![Dashboard](public/assets/images/dasboard.png) | ![Dashboard](public/assets/images/dasboard1.png) | ![Warehouses](public/assets/images/warehourses.png) |
+
+| Add Warehouse | Products | Add Product |
+|---------------|---------|------------|
+| ![Add Warehouse](public/assets/images/warehourse-add.png) | ![Products](public/assets/images/products.png) | ![Add Product](public/assets/images/product-add.png) |
+
+| Orders | Add Order | Movement History |
+|--------|-----------|-----------------|
+| ![Orders](public/assets/images/orders.png) | ![Add Order](public/assets/images/order-add.png) | ![History](public/assets/images/history.png) |
+
+> Screenshots show the main pages: dashboard, CRUD operations, orders, and stock movement history.
+
+---
+
 
 ## 🚀 Technologies Used
 
@@ -17,31 +36,35 @@ It is a system for managing products, warehouses, orders, and stock movements, b
 
 ---
 
-## 📦 Implemented Features
+## 📦 Features
 
-### ✅ Part 1: Basic Management
-- CRUD for products
-- CRUD for warehouses
+### Part 1: Basic Management
+- CRUD operations for products
+- CRUD operations for warehouses
 - Stock management by warehouse
-- Create and update orders (including canceling and completing)
+- Create, update, cancel, and complete orders
 - Automatic stock updates
 
-### ✅ Part 2: Movement History
-- `movements` table to track stock changes
-- Record every movement (creation, update, order, cancellation, etc.)
-- Web interface with filters: by warehouse, product, date
-- REST API: `/api/movements` with support for filtering and pagination
+### Part 2: Movement History
+- `movements` table tracks all stock changes
+- Records every movement: creation, update, order, cancellation, etc.
+- Web interface with filters by warehouse, product, and date
+- REST API endpoint `/api/movements` supports filtering and pagination
 
-### ✅ Part 3: Test Data
-- Console command:
-- php artisan seed:test-data
+### Part 3: Test Data
+
+- You can generate test data using the following Artisan command:
+
+- ```bash
+php artisan seed:test-data 
+```
 
 Will automatically create:
 
-- ✅ 10 warehouses  
-- ✅ 50 products  
-- ✅ Over 1000 stock records  
-- ✅ Product movement history
+- 10 warehouses  
+- 50 products  
+- Over 1000 stock records  
+- Product movement history
 
 
 ## 🔗 API Endpoint
@@ -60,18 +83,23 @@ Allows fetching a list of product movements with support for filters and paginat
 
 ### 📌 Example Request:
 
-**GET /api/movements?product_id=5&warehouse_id=2&from=2024-01-01&to=2024-12-31&per_page=5**
-
+```http
+GET /api/movements?product_id=5&warehouse_id=2&from=2024-01-01&to=2024-12-31&per_page=5
+```
 
 # ⚙️ Project Setup
-- git clone https://github.com/hallame/microcrm.git
-- cd microcrm
-- cp .env.example .env
-- composer install
-- php artisan key:generate
-- php artisan migrate
-- php artisan migrate:fresh --seed
-- php artisan serve
+
+```bash
+git clone https://github.com/hallame/microcrm.git
+
+cd microcrm
+cp .env.example .env
+composer install
+php artisan key:generate
+php artisan migrate
+php artisan migrate:fresh --seed
+php artisan serve
+```
 
 
 ## 👤 Author
