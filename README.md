@@ -7,17 +7,37 @@ It is a system for managing products, warehouses, orders, and stock movements, b
 
 ## Screenshots
 
-| Dashboard | Dashboard 2 | Warehouses |
-|-----------|-------------|------------|
-| ![Dashboard](public/assets/images/dashboard.png) | ![Dashboard](public/assets/images/dashboard1.png) | ![Warehouses](public/assets/images/warehourses.png) |
+### Dashboard
+![Dashboard](public/assets/images/dashboard.png)  
+_Main dashboard page showing summary stats._
 
-| Products | Add Product |
-|---------------|---------|------------|
-| ![Products](public/assets/images/products.png) | ![Add Product](public/assets/images/product-add.png) |
+### Dashboard 2
+![Dashboard 2](public/assets/images/dashboard1.png)  
+_Alternative dashboard view._
 
-| Orders | Add Order | Movement History |
-|--------|-----------|-----------------|
-| ![Orders](public/assets/images/orders.png) | ![Add Order](public/assets/images/order-add.png) | ![History](public/assets/images/history.png) |
+### Warehouses
+![Warehouses](public/assets/images/warehourses.png)  
+_List of warehouses and their stock levels._
+
+### Products
+![Products](public/assets/images/products.png)  
+_List of products with CRUD operations._
+
+### Add Product
+![Add Product](public/assets/images/product-add.png)  
+_Form to add a new product._
+
+### Orders
+![Orders](public/assets/images/orders.png)  
+_List of orders with status._
+
+### Add Order
+![Add Order](public/assets/images/order-add.png)  
+_Form to create a new order._
+
+### Movement History
+![Movement History](public/assets/images/history.png)  
+_History of stock movements with filters._
 
 > Screenshots show the main pages: dashboard, CRUD operations, orders, and stock movement history.
 
