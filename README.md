@@ -91,13 +91,26 @@ GET /api/movements?product_id=5&warehouse_id=2&from=2024-01-01&to=2024-12-31&per
 
 ```bash
 git clone https://github.com/hallame/microcrm.git
-
+```
+```bash
 cd microcrm
+```
+```bash
 cp .env.example .env
+```
+```bash
 composer install
+```
+```bash
 php artisan key:generate
+```
+```bash
 php artisan migrate
+```
+```bash
 php artisan migrate:fresh --seed
+```
+```bash
 php artisan serve
 ```
 
