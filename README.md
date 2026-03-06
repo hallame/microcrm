@@ -2,7 +2,7 @@
 
 This project was developed as part of a **technical test**.  
 It is a system for managing products, warehouses, orders, and stock movements, built with Laravel.
-![Dashboard Screenshot](microcrm.png)
+![Dashboard Screenshot](assets/images/microcrm.png)
 ---
 
 ## 🚀 Technologies Used
