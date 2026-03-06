@@ -13,7 +13,7 @@ It is a system for managing products, warehouses, orders, and stock movements, b
 
 | Add Warehouse | Products | Add Product |
 |---------------|---------|------------|
-| ![Add Warehouse](public/assets/images/warehourse-add.png) | ![Products](public/assets/images/products.png) | ![Add Product](public/assets/images/product-add.png) |
+| ![Products](public/assets/images/products.png) | ![Add Product](public/assets/images/product-add.png) |
 
 | Orders | Add Order | Movement History |
 |--------|-----------|-----------------|
