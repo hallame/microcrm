@@ -1,12 +1,11 @@
-# 🛠️ Micro CRM — Система управления товарами и заказами
+# 🛠️ Micro CRM — Product and Order Management System
 
-Этот проект был разработан в рамках **технического теста**.  
-Он представляет собой систему управления продуктами, складами, заказами и движениями остатков, реализованную на Laravel.
+This project was developed as part of a **technical test**.  
+It is a system for managing products, warehouses, orders, and stock movements, built with Laravel.
 
-🔗 Онлайн-доступ: [https://microcrm.omizix.com](https://microcrm.omizix.com) 
 ---
 
-## 🚀 Используемые технологии
+## 🚀 Technologies Used
 
 - PHP 8.3.17
 - Laravel 12.2
@@ -14,57 +13,57 @@
 - Bootstrap 5
 - Blade
 - REST API
-- Artisan команды
+- Artisan commands
 
 ---
 
-## 📦 Реализованный функционал
+## 📦 Implemented Features
 
-### ✅ Часть 1: Базовое управление
-- CRUD для продуктов
-- CRUD для складов
-- Управление остатками по складам
-- Создание и изменение заказов (включая отмену и завершение)
-- Автоматическое обновление остатков
+### ✅ Part 1: Basic Management
+- CRUD for products
+- CRUD for warehouses
+- Stock management by warehouse
+- Create and update orders (including canceling and completing)
+- Automatic stock updates
 
-### ✅ Часть 2: История движений
-- Таблица `movements` для отслеживания изменений остатков
-- Запись каждого движения (создание, обновление, заказ, отмена и т.д.)
-- Веб-интерфейс с фильтрами: по складу, товару, дате
-- REST API: `/api/movements` с поддержкой фильтрации и пагинации
+### ✅ Part 2: Movement History
+- `movements` table to track stock changes
+- Record every movement (creation, update, order, cancellation, etc.)
+- Web interface with filters: by warehouse, product, date
+- REST API: `/api/movements` with support for filtering and pagination
 
-### ✅ Часть 3: Тестовые данные
-- Консольная команда:
+### ✅ Part 3: Test Data
+- Console command:
 - php artisan seed:test-data
 
-Будет автоматически создано:
+Will automatically create:
 
-- ✅ 10 складов  
-- ✅ 50 продуктов  
-- ✅ Более 1000 записей остатков  
-- ✅ История движений товаров
+- ✅ 10 warehouses  
+- ✅ 50 products  
+- ✅ Over 1000 stock records  
+- ✅ Product movement history
 
 
 ## 🔗 API Endpoint
 
 **GET** `/api/movements`
 
-Позволяет получить список движений товаров с поддержкой фильтров и пагинации.
+Allows fetching a list of product movements with support for filters and pagination.
 
-### Параметры запроса:
+### Request Parameters:
 
-- `product_id` — ID продукта (необязательно)
-- `warehouse_id` — ID склада (необязательно)
-- `from` — начальная дата (формат YYYY-MM-DD)
-- `to` — конечная дата (формат YYYY-MM-DD)
-- `per_page` — количество записей на страницу (по умолчанию 15)
+- `product_id` — Product ID (optional)
+- `warehouse_id` — Warehouse ID (optional)
+- `from` — Start date (format YYYY-MM-DD)
+- `to` — End date (format YYYY-MM-DD)
+- `per_page` — Number of records per page (default 15)
 
-### 📌 Пример запроса:
+### 📌 Example Request:
 
 **GET /api/movements?product_id=5&warehouse_id=2&from=2024-01-01&to=2024-12-31&per_page=5**
 
 
-# ⚙️ Установка проекта
+# ⚙️ Project Setup
 - git clone https://github.com/hallame/microcrm.git
 - cd microcrm
 - cp .env.example .env
@@ -75,9 +74,8 @@
 - php artisan serve
 
 
-## 👤 Автор
+## 👤 Author
 **Hormise ALLAME**
-- Full Stack разработчик
+- Full Stack Developer
 - Telegram: @hormise
-- Email: hormiseallame3@gmail.com
-
+- Website: [OMIZIX.COM](https://omizix.com)
