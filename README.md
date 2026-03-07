@@ -135,9 +135,10 @@ php artisan migrate:fresh --seed
 php artisan serve
 ```
 
-
 ## Author
 **Hormise ALLAME**
-- Full Stack Developer
+- **Full Stack Software Engineer**
+- 100% hands-on project delivery
 - Telegram: @hormise
 - Website: [OMIZIX.COM](https://omizix.com)
+- Live Demo: [microcrm.omizix.com](https://microcrm.omizix.com)
