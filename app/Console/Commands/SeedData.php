@@ -54,7 +54,6 @@ class SeedData extends Command {
                 ]);
             }
         }
-
         $this->info(' Данные успешно сгенерированы.');
     }
 }

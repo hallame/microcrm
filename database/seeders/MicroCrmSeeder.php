@@ -22,6 +22,7 @@ class MicroCrmSeeder extends Seeder {
         // 2. Создаем продукты
         $products = Product::factory()->count(20)->create();
 
+
         // 3. Заполняем остатки (stocks)
         foreach ($warehouses as $warehouse) {
             foreach ($products as $product) {
@@ -68,7 +69,6 @@ class MicroCrmSeeder extends Seeder {
             }
         }
 
-        
         $products = Product::all();
         $warehouses = Warehouse::all();
 
