@@ -1,9 +1,10 @@
-# Micro CRM — Product and Order Management System
+# Micro CRM - Product and Order Management System
 
-This project was developed as part of a **technical test**.  
-It is a system for managing products, warehouses, orders, and stock movements, built with Laravel.
+A warehouse and order management system built with Laravel 12.
+Handles products, stock levels, order lifecycle, and movement history with a full REST API.
 
-🔗 **Live Demo:** [microcrm.omizix.com](https://microcrm.omizix.com)
+Live demo: [microcrm.omizix.com](https://microcrm.omizix.com)
+
 ---
 
 ## Screenshots
